@@ -42,7 +42,7 @@ public class Profile extends BaseDateTime {
 
     private LocalDateTime lastPurchased;
 
-    private boolean notPurchasedMonth;
+    private boolean notPurchasedMonths;
 
     private LocalDateTime repurchased;
 

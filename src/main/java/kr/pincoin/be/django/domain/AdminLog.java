@@ -31,7 +31,7 @@ public class AdminLog {
     private String objectRepr;
 
     @NotNull
-    private boolean actionFlag;
+    private int actionFlag;
 
     @NotNull
     @NotBlank
@@ -51,7 +51,7 @@ public class AdminLog {
 
     public AdminLog(String objectId,
                     String objectRepr,
-                    boolean actionFlag,
+                    int actionFlag,
                     String changeMessage,
                     ContentType contentType,
                     User user) {
