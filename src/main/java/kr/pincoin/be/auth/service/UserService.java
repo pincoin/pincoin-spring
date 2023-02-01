@@ -1,6 +1,8 @@
 package kr.pincoin.be.auth.service;
 
 import kr.pincoin.be.auth.domain.User;
+import kr.pincoin.be.auth.dto.UserCreateRequest;
+import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,27 @@ public class UserService {
     @Transactional
     public Optional<User> getActiveUser(String username) {
         return userRepository.findActiveUser(username);
+    }
+
+    public UserResponse createUser(UserCreateRequest request) {
+        // 비밀번호 암호화
+
+        // 아이디 중복 오류 처리
+        User user = userRepository.save(new User(request.getUsername(),
+                                                 request.getPassword(),
+                                                 request.getEmail(),
+                                                 request.getFirstName(),
+                                                 request.getLastName()));
+
+        return new UserResponse(user.getUsername(),
+                                user.getFirstName(),
+                                user.getLastName(),
+                                user.getEmail(),
+                                user.isSuperuser(),
+                                user.isStaff(),
+                                user.isActive(),
+                                user.getLastLogin(),
+                                user.getDateJoined());
     }
 
     @Transactional

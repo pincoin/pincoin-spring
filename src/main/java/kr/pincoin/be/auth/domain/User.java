@@ -63,6 +63,13 @@ public class User {
         this.isSuperuser = false;
     }
 
+    public User(String username, String password, String email, String firstName, String lastName) {
+        this(username, password, email);
+
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public void changeName(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;

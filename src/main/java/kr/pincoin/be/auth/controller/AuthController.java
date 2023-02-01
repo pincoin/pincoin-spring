@@ -1,7 +1,9 @@
 package kr.pincoin.be.auth.controller;
 
+import jakarta.validation.Valid;
 import kr.pincoin.be.auth.domain.Group;
 import kr.pincoin.be.auth.domain.Permission;
+import kr.pincoin.be.auth.dto.UserCreateRequest;
 import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.service.GroupService;
 import kr.pincoin.be.auth.service.PermissionService;
@@ -74,6 +76,11 @@ public class AuthController {
                                 user.getDateJoined()
                         )))
                 .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<UserResponse> UserCreate(@Valid @RequestBody UserCreateRequest request) {
+        return ResponseEntity.ok().body(userService.createUser(request));
     }
 
     @GetMapping("/staffs")
@@ -201,8 +208,6 @@ public class AuthController {
     // updatePermissionOfContentType
     // deletePermissionOfContentType
 
-    // listGroups
-    // getGroup
     // createGroup
     // updateGroup
     // deleteGroup
@@ -211,8 +216,6 @@ public class AuthController {
     // createUserOfGroup
     // deleteUserOfGroup
 
-    // listPermissions
-    // getPermissions
     // listUsersOfPermission
     // listGroupsOfPermission
     // createPermissionOfUser
