@@ -5,7 +5,7 @@ import kr.pincoin.be.auth.repository.PermissionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
+
 
 import java.util.List;
 
@@ -19,11 +19,7 @@ public class PermissionService {
     }
 
     @Transactional
-    public Mono<List<Permission>> listUsers() {
-        List<Permission> permissions = permissionRepository.findAll();
-        if (permissions.isEmpty()) {
-            return Mono.empty();
-        }
-        return Mono.just(permissions);
+    public List<Permission> listPermissions() {
+        return permissionRepository.findAll();
     }
 }

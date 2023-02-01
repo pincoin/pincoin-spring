@@ -1,17 +1,14 @@
 package kr.pincoin.be.auth.controller;
 
 import kr.pincoin.be.auth.domain.Group;
+import kr.pincoin.be.auth.domain.Permission;
 import kr.pincoin.be.auth.domain.User;
 import kr.pincoin.be.auth.service.GroupService;
 import kr.pincoin.be.auth.service.PermissionService;
 import kr.pincoin.be.auth.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,19 +32,82 @@ public class AuthController {
         return "Auth controller";
     }
 
-    // list, create, update, delete
-
     @GetMapping("/users")
-    public Mono<ResponseEntity<List<User>>> UserList() {
-        return userService.listUsers()
-                .flatMap(response -> Mono.just(ResponseEntity.ok().body(response)));
+    public ResponseEntity<List<User>> UserList() {
+        List<User> users = userService.listUsers();
+
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(users);
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<User> UserDetail(@PathVariable Long userId) {
+        return userService
+                .getUser(userId)
+                .map((user) -> ResponseEntity.ok().body(user))
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping("/groups")
-    public Mono<ResponseEntity<List<Group>>> GroupList() {
-        return groupService.listGroups()
-                .flatMap(response -> {
-                    return Mono.just(ResponseEntity.ok().body(response)); })
-                .switchIfEmpty(Mono.just(ResponseEntity.noContent().build()));
+    public ResponseEntity<List<Group>> GroupList() {
+        List<Group> groups = groupService.listGroups();
+
+        if (groups.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(groups);
     }
+
+    @GetMapping("/permissions")
+    public ResponseEntity<List<Permission>> PermissionList() {
+        List<Permission> permissions = permissionService.listPermissions();
+
+        if (permissions.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(permissions);
+    }
+
+
+    // getUser
+    // createUser
+    // updateUser
+    // deleteUser
+    // listGroupsOfUser
+    // listPermissionsOfUser
+
+    // listContentTypes
+    // getContentType
+    // createContentType
+    // updateContentType
+    // deleteContentType
+    // listPermissionsOfContentType
+    // createPermissionOfContentType
+    // updatePermissionOfContentType
+    // deletePermissionOfContentType
+
+    // listGroups
+    // getGroup
+    // createGroup
+    // updateGroup
+    // deleteGroup
+    // listUsersOfGroup
+    // listPermissionsOfGroup
+    // createUserOfGroup
+    // deleteUserOfGroup
+
+    // listPermissions
+    // getPermissions
+    // listUsersOfPermission
+    // listGroupsOfPermission
+    // createPermissionOfUser
+    // deletePermissionOfUser
+    // createPermissionOfGroup
+    // deletePermissionOfGroup
+    // listContentTypesOfPermission
 }
