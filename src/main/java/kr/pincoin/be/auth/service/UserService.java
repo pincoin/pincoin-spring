@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -20,12 +19,32 @@ public class UserService {
     }
 
     @Transactional
-    public List<User> listUsers() {
-        return userRepository.findAll();
+    public List<User> listActiveUsers() {
+        return userRepository.findActiveUsers();
     }
 
     @Transactional
-    public Optional<User> getUser(Long id) {
-       return userRepository.findById(id);
+    public Optional<User> getActiveUser(String username) {
+        return userRepository.findActiveUser(username);
+    }
+
+    @Transactional
+    public List<User> listStaffUsers() {
+        return userRepository.findStaffUsers();
+    }
+
+    @Transactional
+    public Optional<User> getStaffUser(String username) {
+        return userRepository.findStaffUser(username);
+    }
+
+    @Transactional
+    public List<User> listSuperUsers() {
+        return userRepository.findSuperUsers();
+    }
+
+    @Transactional
+    public Optional<User> getSuperUser(String username) {
+        return userRepository.findSuperUser(username);
     }
 }

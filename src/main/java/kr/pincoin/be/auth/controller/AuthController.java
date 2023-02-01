@@ -35,7 +35,7 @@ public class AuthController {
 
     @GetMapping("/users")
     public ResponseEntity<List<UserResponse>> UserList() {
-        List<UserResponse> users = userService.listUsers()
+        List<UserResponse> users = userService.listActiveUsers()
                 .stream()
                 .map(user -> new UserResponse(
                         user.getUsername(),
@@ -56,10 +56,97 @@ public class AuthController {
         return ResponseEntity.ok().body(users);
     }
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<UserResponse> UserDetail(@PathVariable Long userId) {
+    @GetMapping("/users/{username}")
+    public ResponseEntity<UserResponse>
+    UserDetail(@PathVariable String username) {
         return userService
-                .getUser(userId)
+                .getActiveUser(username)
+                .map((user) -> ResponseEntity.ok().body(
+                        new UserResponse(
+                                user.getUsername(),
+                                user.getFirstName(),
+                                user.getLastName(),
+                                user.getEmail(),
+                                user.isSuperuser(),
+                                user.isStaff(),
+                                user.isActive(),
+                                user.getLastLogin(),
+                                user.getDateJoined()
+                        )))
+                .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
+    @GetMapping("/staffs")
+    public ResponseEntity<List<UserResponse>> StaffUserList() {
+        List<UserResponse> users = userService.listStaffUsers()
+                .stream()
+                .map(user -> new UserResponse(
+                        user.getUsername(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.isSuperuser(),
+                        user.isStaff(),
+                        user.isActive(),
+                        user.getLastLogin(),
+                        user.getDateJoined()))
+                .collect(Collectors.toList());
+
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(users);
+    }
+
+    @GetMapping("/staffs/{username}")
+    public ResponseEntity<UserResponse>
+    StaffUserDetail(@PathVariable String username) {
+        return userService
+                .getStaffUser(username)
+                .map((user) -> ResponseEntity.ok().body(
+                        new UserResponse(
+                                user.getUsername(),
+                                user.getFirstName(),
+                                user.getLastName(),
+                                user.getEmail(),
+                                user.isSuperuser(),
+                                user.isStaff(),
+                                user.isActive(),
+                                user.getLastLogin(),
+                                user.getDateJoined()
+                        )))
+                .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
+    @GetMapping("/superusers")
+    public ResponseEntity<List<UserResponse>> SuperUserList() {
+        List<UserResponse> users = userService.listSuperUsers()
+                .stream()
+                .map(user -> new UserResponse(
+                        user.getUsername(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.isSuperuser(),
+                        user.isStaff(),
+                        user.isActive(),
+                        user.getLastLogin(),
+                        user.getDateJoined()))
+                .collect(Collectors.toList());
+
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(users);
+    }
+
+    @GetMapping("/superusers/{username}")
+    public ResponseEntity<UserResponse>
+    StaffDetail(@PathVariable String username) {
+        return userService
+                .getSuperUser(username)
                 .map((user) -> ResponseEntity.ok().body(
                         new UserResponse(
                                 user.getUsername(),
