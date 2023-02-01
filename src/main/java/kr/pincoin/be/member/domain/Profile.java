@@ -71,8 +71,4 @@ public class Profile extends BaseDateTime {
     @JoinColumn(name = "user_id")
     @NotNull
     private User user;
-
-    private String accessToken;
-
-    private String refreshToken;
 }
