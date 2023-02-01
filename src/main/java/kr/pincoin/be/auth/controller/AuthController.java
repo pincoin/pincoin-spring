@@ -2,7 +2,7 @@ package kr.pincoin.be.auth.controller;
 
 import kr.pincoin.be.auth.domain.Group;
 import kr.pincoin.be.auth.domain.Permission;
-import kr.pincoin.be.auth.domain.User;
+import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.service.GroupService;
 import kr.pincoin.be.auth.service.PermissionService;
 import kr.pincoin.be.auth.service.UserService;
@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,8 +34,20 @@ public class AuthController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> UserList() {
-        List<User> users = userService.listUsers();
+    public ResponseEntity<List<UserResponse>> UserList() {
+        List<UserResponse> users = userService.listUsers()
+                .stream()
+                .map(user -> new UserResponse(
+                        user.getUsername(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.isSuperuser(),
+                        user.isStaff(),
+                        user.isActive(),
+                        user.getLastLogin(),
+                        user.getDateJoined()))
+                .collect(Collectors.toList());
 
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -44,10 +57,21 @@ public class AuthController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<User> UserDetail(@PathVariable Long userId) {
+    public ResponseEntity<UserResponse> UserDetail(@PathVariable Long userId) {
         return userService
                 .getUser(userId)
-                .map((user) -> ResponseEntity.ok().body(user))
+                .map((user) -> ResponseEntity.ok().body(
+                        new UserResponse(
+                                user.getUsername(),
+                                user.getFirstName(),
+                                user.getLastName(),
+                                user.getEmail(),
+                                user.isSuperuser(),
+                                user.isStaff(),
+                                user.isActive(),
+                                user.getLastLogin(),
+                                user.getDateJoined()
+                        )))
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
@@ -74,7 +98,6 @@ public class AuthController {
     }
 
 
-    // getUser
     // createUser
     // updateUser
     // deleteUser
