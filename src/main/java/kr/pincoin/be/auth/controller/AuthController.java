@@ -98,9 +98,8 @@ public class AuthController {
     @PostMapping("/users")
     public ResponseEntity<UserResponse>
     UserCreate(@Valid @RequestBody UserCreateRequest request) {
-        UserResponse response = userService.createUser(request);
-
         try {
+            UserResponse response = userService.createUser(request);
             return ResponseEntity.ok().body(response);
         } catch (DataIntegrityViolationException | ConstraintViolationException ignored) {
             // 아이디 중복 예외
