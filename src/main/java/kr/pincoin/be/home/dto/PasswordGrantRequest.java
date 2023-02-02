@@ -1,4 +1,4 @@
-package kr.pincoin.be.auth.dto;
+package kr.pincoin.be.home.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

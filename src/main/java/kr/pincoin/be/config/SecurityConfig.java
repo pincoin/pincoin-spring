@@ -90,7 +90,9 @@ public class SecurityConfig {
                                            // anyRequest().fullyAuthenticated() // 인증된 사용자만 접근 가능 단, rememberMe 이용 시 접근 불가
                                            auth
                                                    .requestMatchers("/").permitAll()
-                                                   .requestMatchers("/auth/**").permitAll()
+                                                   .requestMatchers("/access-token").permitAll()
+                                                   .requestMatchers("/refresh-token").permitAll()
+                                                   .requestMatchers("/sign-up").permitAll()
                                                    .requestMatchers("/member/**").permitAll()
                                                    .anyRequest().fullyAuthenticated()
                                   );

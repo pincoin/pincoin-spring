@@ -9,54 +9,54 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query(value = "SELECT u FROM User u WHERE u.isActive = true")
+    @Query(value = "SELECT u FROM User u WHERE u.active = true")
     List<User> findActiveUsers();
 
-    @Query(value = "SELECT u FROM User u WHERE u.isActive = false")
+    @Query(value = "SELECT u FROM User u WHERE u.active = false")
     List<User> findInactiveUsers();
 
     @Query(value = "SELECT u" +
             " FROM User u" +
             " WHERE u.username = :username" +
-            " AND u.isActive = true")
+            " AND u.active = true")
     Optional<User> findActiveUser(@Param("username")String username);
 
     @Query(value = "SELECT u" +
             " FROM User u" +
             " WHERE u.username = :username" +
-            " AND u.isActive = false")
+            " AND u.active = false")
     Optional<User> findInactiveUser(String username);
 
     @Query(value = "SELECT u" +
             " FROM User u" +
             " JOIN Token t" +
             " WHERE u.username = :username" +
-            " AND u.isActive = true")
+            " AND u.active = true")
     Optional<User> findActiveUserWithToken(String username);
 
     @Query(value = "SELECT u" +
             " FROM User u" +
-            " WHERE u.isActive = true" +
-            " AND u.isStaff = true")
+            " WHERE u.active = true" +
+            " AND u.staff = true")
     List<User> findStaffUsers();
 
     @Query(value = "SELECT u" +
             " FROM User u" +
             " WHERE u.username = :username" +
-            " AND u.isActive = true" +
-            " AND u.isStaff = true")
+            " AND u.active = true" +
+            " AND u.staff = true")
     Optional<User> findStaffUser(String username);
 
     @Query(value = "SELECT u" +
             " FROM User u" +
-            " WHERE u.isActive = true" +
-            " AND u.isSuperuser = true")
+            " WHERE u.active = true" +
+            " AND u.superuser = true")
     List<User> findSuperUsers();
 
     @Query(value = "SELECT u" +
             " FROM User u" +
             " WHERE u.username = :username" +
-            " AND u.isActive = true" +
-            " AND u.isSuperuser = true")
+            " AND u.active = true" +
+            " AND u.superuser = true")
     Optional<User> findSuperUser(String username);
 }

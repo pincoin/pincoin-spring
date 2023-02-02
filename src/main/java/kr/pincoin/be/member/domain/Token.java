@@ -3,6 +3,7 @@ package kr.pincoin.be.member.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import kr.pincoin.be.auth.domain.User;
+import kr.pincoin.be.home.domain.BaseDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

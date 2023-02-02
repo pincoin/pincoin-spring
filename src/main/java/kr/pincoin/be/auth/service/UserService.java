@@ -1,4 +1,4 @@
-package kr.pincoin.be.member.service;
+package kr.pincoin.be.auth.service;
 
 import jakarta.validation.ConstraintViolationException;
 import kr.pincoin.be.auth.domain.User;

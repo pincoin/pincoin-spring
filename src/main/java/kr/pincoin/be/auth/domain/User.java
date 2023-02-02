@@ -27,8 +27,9 @@ public class User {
 
     private LocalDateTime lastLogin;
 
+    @Column(name = "is_superuser")
     @NotNull
-    private boolean isSuperuser;
+    private boolean superuser;
 
     @NotNull
     @NotBlank
@@ -45,11 +46,13 @@ public class User {
     @Email
     private String email;
 
+    @Column(name = "is_staff")
     @NotNull
-    private boolean isStaff;
+    private boolean staff;
 
+    @Column(name = "is_active")
     @NotNull
-    private boolean isActive;
+    private boolean active;
 
     @NotNull
     private LocalDateTime dateJoined;
@@ -66,9 +69,9 @@ public class User {
         this.email = email;
         this.dateJoined = LocalDateTime.now();
 
-        this.isActive = false;
-        this.isStaff = false;
-        this.isSuperuser = false;
+        this.active = false;
+        this.staff = false;
+        this.superuser = false;
     }
 
     public User(String username, String password, String email, String firstName, String lastName) {
@@ -79,7 +82,7 @@ public class User {
     }
 
     public User activate() {
-        this.isActive = true;
+        this.active = true;
         return this;
     }
 
@@ -93,14 +96,14 @@ public class User {
     }
 
     public void setActive(boolean active) {
-        this.isActive = active;
+        this.active = active;
     }
 
-    public void setStaff(boolean isStaff) {
-        this.isStaff = isStaff;
+    public void setStaff(boolean staff) {
+        this.staff = staff;
     }
 
-    public void setSuperuser(boolean isSuperuser) {
-        this.isSuperuser = isSuperuser;
+    public void setSuperuser(boolean superuser) {
+        this.superuser = superuser;
     }
 }

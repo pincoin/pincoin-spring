@@ -1,4 +1,4 @@
-package kr.pincoin.be.member.domain;
+package kr.pincoin.be.home.domain;
 
 
 import jakarta.persistence.Column;
