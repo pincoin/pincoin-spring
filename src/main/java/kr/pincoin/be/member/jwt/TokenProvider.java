@@ -47,7 +47,7 @@ public class TokenProvider {
     public Optional<String> getUsername(String token) {
         try {
             Jws<Claims> jws = Jwts.parserBuilder()
-                    .setSigningKey(Decoders.BASE64.decode(env.getProperty("pincoin.jwt-secret-key"))).build()
+                    .setSigningKey(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key"))).build()
                     .parseClaimsJws(token);
 
             return Optional.ofNullable(jws.getBody().getSubject());

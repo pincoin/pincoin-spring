@@ -1,4 +1,4 @@
-package kr.pincoin.be.auth.dto;
+package kr.pincoin.be.member.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;

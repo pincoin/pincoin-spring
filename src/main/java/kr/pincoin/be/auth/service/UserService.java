@@ -2,8 +2,8 @@ package kr.pincoin.be.auth.service;
 
 import jakarta.validation.ConstraintViolationException;
 import kr.pincoin.be.auth.domain.User;
-import kr.pincoin.be.auth.dto.UserCreateRequest;
-import kr.pincoin.be.auth.dto.UserResponse;
+import kr.pincoin.be.member.dto.UserCreateRequest;
+import kr.pincoin.be.member.dto.UserResponse;
 import kr.pincoin.be.auth.repository.UserRepository;
 import kr.pincoin.be.member.domain.Token;
 import kr.pincoin.be.member.repository.ProfileRepository;

@@ -91,13 +91,14 @@ public class SecurityConfig {
                                            auth
                                                    .requestMatchers("/").permitAll()
                                                    .requestMatchers("/auth/**").permitAll()
+                                                   .requestMatchers("/member/**").permitAll()
                                                    .anyRequest().fullyAuthenticated()
                                   );
 
         // JWT 토큰 처리 필터 추가
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // 생략
+        // 폼 인증 기능 생략
         // http.logout()
         // http.rememberMe()
 
