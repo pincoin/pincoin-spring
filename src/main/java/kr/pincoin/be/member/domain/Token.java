@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "member_token")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Token {
+public class Token extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

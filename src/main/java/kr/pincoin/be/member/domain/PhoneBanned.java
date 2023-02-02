@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "member_phonebanned")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PhoneBanned {
+public class PhoneBanned extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -4,11 +4,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.pincoin.be.member.service.MemberDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,11 +23,12 @@ import java.util.Optional;
 public class JwtFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
 
-    private final MemberDetailsService memberDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    public JwtFilter(TokenProvider tokenProvider, MemberDetailsService memberDetailsService) {
+    public JwtFilter(TokenProvider tokenProvider,
+                     UserDetailsService userDetailsService) {
         this.tokenProvider = tokenProvider;
-        this.memberDetailsService = memberDetailsService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
         UserDetails userDetails;
 
         try {
-            userDetails = memberDetailsService.loadUserByUsername(username.get());
+            userDetails = userDetailsService.loadUserByUsername(username.get());
             log.debug("{} is authorized.", userDetails.getUsername());
         } catch (UsernameNotFoundException ignored) {
             chain.doFilter(request, response);

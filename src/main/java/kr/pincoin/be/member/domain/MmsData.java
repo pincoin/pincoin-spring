@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "member_mmsdata")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MmsData {
+public class MmsData extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

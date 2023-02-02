@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "member_loginlog")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LoginLog {
+public class LoginLog extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
