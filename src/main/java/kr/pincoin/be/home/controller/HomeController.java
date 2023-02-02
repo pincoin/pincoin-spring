@@ -2,12 +2,11 @@ package kr.pincoin.be.home.controller;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
-import kr.pincoin.be.auth.service.AuthService;
 import kr.pincoin.be.auth.service.UserService;
 import kr.pincoin.be.home.dto.AccessTokenResponse;
 import kr.pincoin.be.home.dto.PasswordGrantRequest;
-import kr.pincoin.be.member.dto.UserCreateRequest;
-import kr.pincoin.be.member.dto.UserResponse;
+import kr.pincoin.be.auth.dto.UserCreateRequest;
+import kr.pincoin.be.auth.dto.UserResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -19,13 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @Slf4j
 public class HomeController {
-    private final AuthService authService;
-
     private final UserService userService;
 
-    public HomeController(AuthService authService,
-                          UserService userService) {
-        this.authService = authService;
+    public HomeController(UserService userService) {
         this.userService = userService;
     }
 
@@ -49,7 +44,7 @@ public class HomeController {
     @PostMapping("/access-token")
     public ResponseEntity<AccessTokenResponse>
     AccessToken(@Valid @RequestBody PasswordGrantRequest request) {
-        AccessTokenResponse response = authService.authenticate(request);
+        AccessTokenResponse response = userService.authenticate(request);
 
         if (response != null) {
             HttpHeaders responseHeaders = new HttpHeaders();

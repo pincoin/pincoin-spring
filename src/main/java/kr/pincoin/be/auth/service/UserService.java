@@ -2,10 +2,13 @@ package kr.pincoin.be.auth.service;
 
 import jakarta.validation.ConstraintViolationException;
 import kr.pincoin.be.auth.domain.User;
+import kr.pincoin.be.auth.dto.UserCreateRequest;
+import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.repository.UserRepository;
+import kr.pincoin.be.home.dto.AccessTokenResponse;
+import kr.pincoin.be.home.dto.PasswordGrantRequest;
 import kr.pincoin.be.member.domain.Token;
-import kr.pincoin.be.member.dto.UserCreateRequest;
-import kr.pincoin.be.member.dto.UserResponse;
+import kr.pincoin.be.member.jwt.TokenProvider;
 import kr.pincoin.be.member.repository.ProfileRepository;
 import kr.pincoin.be.member.repository.TokenRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -20,19 +23,31 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class UserService {
+    public static final int TOKEN_EXPIRES_IN = 3600;
+
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final TokenRepository tokenRepository;
+    private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
                        ProfileRepository profileRepository,
                        TokenRepository tokenRepository,
+                       TokenProvider tokenProvider,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.tokenRepository = tokenRepository;
+        this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    public AccessTokenResponse authenticate(PasswordGrantRequest request) {
+        return userRepository.findActiveUser(request.getUsername())
+                .map(user -> new AccessTokenResponse(tokenProvider.createToken(user.getUsername(), user.getId()),
+                                                     TOKEN_EXPIRES_IN))
+                .orElse(null);
     }
 
     @Transactional

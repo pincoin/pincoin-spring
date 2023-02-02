@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static kr.pincoin.be.auth.service.AuthService.TOKEN_EXPIRES_IN;
+import static kr.pincoin.be.auth.service.UserService.TOKEN_EXPIRES_IN;
 
 @Slf4j
 @Component

@@ -1,4 +1,4 @@
-package kr.pincoin.be.member.dto;
+package kr.pincoin.be.auth.dto;
 
 import kr.pincoin.be.django.domain.ContentType;
 import lombok.AccessLevel;

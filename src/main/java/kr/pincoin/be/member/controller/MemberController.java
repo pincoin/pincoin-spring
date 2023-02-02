@@ -1,17 +1,12 @@
 package kr.pincoin.be.member.controller;
 
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
 import kr.pincoin.be.auth.domain.Group;
 import kr.pincoin.be.auth.domain.Permission;
-import kr.pincoin.be.member.dto.UserCreateRequest;
-import kr.pincoin.be.member.dto.UserResponse;
+import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.service.GroupService;
 import kr.pincoin.be.auth.service.PermissionService;
 import kr.pincoin.be.auth.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

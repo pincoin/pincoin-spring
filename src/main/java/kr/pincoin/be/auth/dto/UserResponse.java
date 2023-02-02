@@ -1,4 +1,4 @@
-package kr.pincoin.be.member.dto;
+package kr.pincoin.be.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
