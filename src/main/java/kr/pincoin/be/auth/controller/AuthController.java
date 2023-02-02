@@ -1,5 +1,6 @@
 package kr.pincoin.be.auth.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import kr.pincoin.be.auth.domain.Group;
 import kr.pincoin.be.auth.domain.Permission;
@@ -10,6 +11,8 @@ import kr.pincoin.be.auth.service.GroupService;
 import kr.pincoin.be.auth.service.PermissionService;
 import kr.pincoin.be.auth.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,7 +98,14 @@ public class AuthController {
     @PostMapping("/users")
     public ResponseEntity<UserResponse>
     UserCreate(@Valid @RequestBody UserCreateRequest request) {
-        return ResponseEntity.ok().body(userService.createUser(request));
+        UserResponse response = userService.createUser(request);
+
+        try {
+            return ResponseEntity.ok().body(response);
+        } catch (DataIntegrityViolationException | ConstraintViolationException ignored) {
+            // 아이디 중복 예외
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     @GetMapping("/staffs")

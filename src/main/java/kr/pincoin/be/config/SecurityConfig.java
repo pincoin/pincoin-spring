@@ -76,10 +76,11 @@ public class SecurityConfig {
                     .and().frameOptions().sameOrigin();
         });
 
-        // 세션관리
+        // 세션관리 (stateless 세션 관리 없음)
         http.sessionManagement(session ->
                                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                                               .maximumSessions(1).maxSessionsPreventsLogin(true));
+                                               .maximumSessions(1)
+                                               .maxSessionsPreventsLogin(true));
 
         // 요청 리소스 권한 매핑
         http.authorizeHttpRequests(auth ->

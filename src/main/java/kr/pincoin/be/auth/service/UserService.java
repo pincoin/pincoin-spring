@@ -1,10 +1,13 @@
 package kr.pincoin.be.auth.service;
 
+import jakarta.validation.ConstraintViolationException;
 import kr.pincoin.be.auth.domain.User;
 import kr.pincoin.be.auth.dto.UserCreateRequest;
 import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +19,12 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -30,16 +37,13 @@ public class UserService {
         return userRepository.findActiveUser(username);
     }
 
-    public UserResponse createUser(UserCreateRequest request) {
-        // 비밀번호 암호화
-
-        // 아이디 중복 오류 처리
+    public UserResponse createUser(UserCreateRequest request) throws DataIntegrityViolationException,
+                                                                     ConstraintViolationException {
         User user = userRepository.save(new User(request.getUsername(),
-                                                 request.getPassword(),
+                                                 passwordEncoder.encode(request.getPassword()),
                                                  request.getEmail(),
                                                  request.getFirstName(),
                                                  request.getLastName()));
-
         return new UserResponse(user.getUsername(),
                                 user.getFirstName(),
                                 user.getLastName(),

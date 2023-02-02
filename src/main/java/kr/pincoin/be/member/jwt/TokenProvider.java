@@ -47,7 +47,7 @@ public class TokenProvider {
     public Optional<String> getUsername(String token) {
         try {
             Jws<Claims> jws = Jwts.parserBuilder()
-                    .setSigningKey(Decoders.BASE64.decode(env.getProperty("shinpay.jwt-secret-key"))).build()
+                    .setSigningKey(Decoders.BASE64.decode(env.getProperty("pincoin.jwt-secret-key"))).build()
                     .parseClaimsJws(token);
 
             return Optional.ofNullable(jws.getBody().getSubject());
@@ -64,7 +64,7 @@ public class TokenProvider {
     }
 
     public String createToken(String username, Long id) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(env.getProperty("shinpay.jwt-secret-key")));
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(env.getProperty("pincoin.jwt-secret-key")));
 
         Map<String, Object> headers = new HashMap<>();
         headers.put("typ", "JWT");
