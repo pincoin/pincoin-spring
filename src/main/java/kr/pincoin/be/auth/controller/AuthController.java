@@ -3,6 +3,7 @@ package kr.pincoin.be.auth.controller;
 import jakarta.validation.Valid;
 import kr.pincoin.be.auth.domain.Group;
 import kr.pincoin.be.auth.domain.Permission;
+import kr.pincoin.be.auth.dto.TokenResponse;
 import kr.pincoin.be.auth.dto.UserCreateRequest;
 import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.service.GroupService;
@@ -35,8 +36,21 @@ public class AuthController {
         return "Auth controller";
     }
 
+    @PostMapping("/access-token")
+    public ResponseEntity<TokenResponse>
+    AccessToken() {
+        return null;
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<TokenResponse>
+    RefreshToken() {
+        return null;
+    }
+
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponse>> UserList() {
+    public ResponseEntity<List<UserResponse>>
+    UserList() {
         List<UserResponse> users = userService.listActiveUsers()
                 .stream()
                 .map(user -> new UserResponse(
@@ -79,12 +93,14 @@ public class AuthController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserResponse> UserCreate(@Valid @RequestBody UserCreateRequest request) {
+    public ResponseEntity<UserResponse>
+    UserCreate(@Valid @RequestBody UserCreateRequest request) {
         return ResponseEntity.ok().body(userService.createUser(request));
     }
 
     @GetMapping("/staffs")
-    public ResponseEntity<List<UserResponse>> StaffUserList() {
+    public ResponseEntity<List<UserResponse>>
+    StaffUserList() {
         List<UserResponse> users = userService.listStaffUsers()
                 .stream()
                 .map(user -> new UserResponse(
@@ -127,7 +143,8 @@ public class AuthController {
     }
 
     @GetMapping("/superusers")
-    public ResponseEntity<List<UserResponse>> SuperUserList() {
+    public ResponseEntity<List<UserResponse>>
+    SuperUserList() {
         List<UserResponse> users = userService.listSuperUsers()
                 .stream()
                 .map(user -> new UserResponse(
@@ -170,7 +187,8 @@ public class AuthController {
     }
 
     @GetMapping("/groups")
-    public ResponseEntity<List<Group>> GroupList() {
+    public ResponseEntity<List<Group>>
+    GroupList() {
         List<Group> groups = groupService.listGroups();
 
         if (groups.isEmpty()) {
@@ -181,7 +199,8 @@ public class AuthController {
     }
 
     @GetMapping("/permissions")
-    public ResponseEntity<List<Permission>> PermissionList() {
+    public ResponseEntity<List<Permission>>
+    PermissionList() {
         List<Permission> permissions = permissionService.listPermissions();
 
         if (permissions.isEmpty()) {
