@@ -85,18 +85,6 @@ public class MemberController {
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
-    @PostMapping("/users")
-    public ResponseEntity<UserResponse>
-    UserCreate(@Valid @RequestBody UserCreateRequest request) {
-        try {
-            UserResponse response = userService.createUser(request);
-            return ResponseEntity.ok().body(response);
-        } catch (DataIntegrityViolationException | ConstraintViolationException ignored) {
-            log.warn("username is duplicated: [{}]", request.getUsername());
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-    }
-
     @GetMapping("/staffs")
     public ResponseEntity<List<UserResponse>>
     StaffUserList() {

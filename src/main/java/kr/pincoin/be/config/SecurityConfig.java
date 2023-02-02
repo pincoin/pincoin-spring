@@ -93,7 +93,6 @@ public class SecurityConfig {
                                                    .requestMatchers("/access-token").permitAll()
                                                    .requestMatchers("/refresh-token").permitAll()
                                                    .requestMatchers("/sign-up").permitAll()
-                                                   .requestMatchers("/member/**").permitAll()
                                                    .anyRequest().fullyAuthenticated()
                                   );
 

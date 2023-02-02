@@ -20,13 +20,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new MemberDetails(userRepository.findActiveUserWithToken(username)
-                                         .map(user -> {
-                                             if (user.getToken().getAccessToken().isBlank()) {
-                                                 throw new UsernameNotFoundException("승인되지 않은 사용자");
-                                             }
-                                             return user;
-                                         })
+        return new MemberDetails(userRepository
+                                         .findActiveUser(username)
                                          .orElseThrow(() -> new UsernameNotFoundException("가입 승인 완료 후 로그인 가능합니다.")));
     }
 }

@@ -19,20 +19,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " FROM User u" +
             " WHERE u.username = :username" +
             " AND u.active = true")
-    Optional<User> findActiveUser(@Param("username")String username);
+    Optional<User> findActiveUser(@Param("username") String username);
 
     @Query(value = "SELECT u" +
             " FROM User u" +
             " WHERE u.username = :username" +
             " AND u.active = false")
-    Optional<User> findInactiveUser(String username);
+    Optional<User> findInactiveUser(@Param("username") String username);
 
     @Query(value = "SELECT u" +
             " FROM User u" +
             " JOIN Token t" +
             " WHERE u.username = :username" +
             " AND u.active = true")
-    Optional<User> findActiveUserWithToken(String username);
+    Optional<User> findActiveUserWithToken(@Param("username") String username);
 
     @Query(value = "SELECT u" +
             " FROM User u" +
@@ -45,7 +45,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " WHERE u.username = :username" +
             " AND u.active = true" +
             " AND u.staff = true")
-    Optional<User> findStaffUser(String username);
+    Optional<User> findStaffUser(@Param("username") String username);
 
     @Query(value = "SELECT u" +
             " FROM User u" +
@@ -58,5 +58,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " WHERE u.username = :username" +
             " AND u.active = true" +
             " AND u.superuser = true")
-    Optional<User> findSuperUser(String username);
+    Optional<User> findSuperUser(@Param("username") String username);
 }
