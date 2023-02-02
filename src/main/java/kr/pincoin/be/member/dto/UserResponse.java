@@ -1,5 +1,6 @@
 package kr.pincoin.be.member.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class UserResponse {
 
     private boolean isActive;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime lastLogin;
 
     private LocalDateTime dateJoined;

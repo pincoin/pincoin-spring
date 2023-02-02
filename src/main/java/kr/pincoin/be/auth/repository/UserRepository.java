@@ -3,6 +3,7 @@ package kr.pincoin.be.auth.repository;
 import kr.pincoin.be.auth.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " FROM User u" +
             " WHERE u.username = :username" +
             " AND u.isActive = true")
-    Optional<User> findActiveUser(String username);
+    Optional<User> findActiveUser(@Param("username")String username);
 
     @Query(value = "SELECT u" +
             " FROM User u" +

@@ -1,4 +1,4 @@
-package kr.pincoin.be.auth.service;
+package kr.pincoin.be.member.service;
 
 import kr.pincoin.be.auth.domain.Group;
 import kr.pincoin.be.auth.repository.GroupRepository;

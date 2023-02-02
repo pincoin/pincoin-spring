@@ -78,6 +78,11 @@ public class User {
         this.lastName = lastName;
     }
 
+    public User activate() {
+        this.isActive = true;
+        return this;
+    }
+
     public void changeName(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -87,27 +92,15 @@ public class User {
         this.lastLogin = LocalDateTime.now();
     }
 
-    public void activate() {
-        this.isActive = true;
+    public void setActive(boolean active) {
+        this.isActive = active;
     }
 
-    public void deactivate() {
-        this.isActive = false;
+    public void setStaff(boolean isStaff) {
+        this.isStaff = isStaff;
     }
 
-    public void appointStaff() {
-        this.isStaff = true;
-    }
-
-    public void dismissStaff() {
-        this.isStaff = false;
-    }
-
-    public void appointSuperuser() {
-        this.isSuperuser = true;
-    }
-
-    public void dismissSuperuser() {
-        this.isSuperuser = false;
+    public void setSuperuser(boolean isSuperuser) {
+        this.isSuperuser = isSuperuser;
     }
 }

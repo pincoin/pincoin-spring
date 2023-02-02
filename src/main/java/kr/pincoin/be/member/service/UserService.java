@@ -1,11 +1,11 @@
-package kr.pincoin.be.auth.service;
+package kr.pincoin.be.member.service;
 
 import jakarta.validation.ConstraintViolationException;
 import kr.pincoin.be.auth.domain.User;
-import kr.pincoin.be.member.dto.UserCreateRequest;
-import kr.pincoin.be.member.dto.UserResponse;
 import kr.pincoin.be.auth.repository.UserRepository;
 import kr.pincoin.be.member.domain.Token;
+import kr.pincoin.be.member.dto.UserCreateRequest;
+import kr.pincoin.be.member.dto.UserResponse;
 import kr.pincoin.be.member.repository.ProfileRepository;
 import kr.pincoin.be.member.repository.TokenRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,8 @@ public class UserService {
                                                  passwordEncoder.encode(request.getPassword()),
                                                  request.getEmail(),
                                                  request.getFirstName(),
-                                                 request.getLastName()));
+                                                 request.getLastName())
+                                                .activate());
 
         tokenRepository.save(new Token(user));
 

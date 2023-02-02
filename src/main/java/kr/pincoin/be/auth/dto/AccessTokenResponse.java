@@ -26,24 +26,26 @@ public class AccessTokenResponse {
 
     @JsonProperty("expires_in")
     @NotNull
-    @NotBlank
-    private String expiresIn;
+    private Integer expiresIn;
 
     @JsonProperty("refresh_token")
-    @NotNull
-    @NotBlank
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String refreshToken;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String scope;
 
     public AccessTokenResponse(String accessToken,
-                               String tokenType,
-                               String expiresIn,
-                               String refreshToken) {
+                               Integer expiresIn) {
+        this.tokenType = "Bearer";
         this.accessToken = accessToken;
-        this.tokenType = tokenType;
         this.expiresIn = expiresIn;
+    }
+
+    public AccessTokenResponse(String accessToken,
+                               Integer expiresIn,
+                               String refreshToken) {
+        this(accessToken, expiresIn);
         this.refreshToken = refreshToken;
     }
 }

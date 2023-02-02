@@ -3,7 +3,9 @@ package kr.pincoin.be.auth.controller;
 import jakarta.validation.Valid;
 import kr.pincoin.be.auth.dto.AccessTokenResponse;
 import kr.pincoin.be.auth.dto.PasswordGrantRequest;
+import kr.pincoin.be.auth.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +14,14 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @Slf4j
 public class AuthController {
+    public static final int TOKEN_EXPIRES_IN = 3600;
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
     @GetMapping("")
     public String Home() {
         return "Auth controller";
@@ -20,15 +30,13 @@ public class AuthController {
     @PostMapping("/access-token")
     public ResponseEntity<AccessTokenResponse>
     AccessToken(@Valid @RequestBody PasswordGrantRequest request) {
-        log.debug(request.getGrantType());
-        log.debug(request.getUsername());
-        log.debug(request.getPassword());
+        AccessTokenResponse response = authService.authenticate(request);
 
-        AccessTokenResponse response = new AccessTokenResponse("access_token",
-                                                               "token_type",
-                                                               "expires_in",
-                                                               "refresh_token");
-        return ResponseEntity.ok().body(response);
+        if (response != null) {
+            return ResponseEntity.ok().body(response);
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @PostMapping("/refresh-token")

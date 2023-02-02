@@ -78,7 +78,9 @@ public class TokenProvider {
                 .setClaims(claims)
                 .setSubject(username) // sub
                 // .setId("1") // jti
-                .setExpiration(Date.from(LocalDateTime.now().plus(Duration.of(15, ChronoUnit.MINUTES)).atZone(ZoneId.systemDefault()).toInstant())) // exp
+                .setExpiration(Date.from(LocalDateTime.now()
+                                                 .plus(Duration.of(15, ChronoUnit.MINUTES))
+                                                 .atZone(ZoneId.systemDefault()).toInstant())) // exp
                 .signWith(key)
                 .compact();
     }
