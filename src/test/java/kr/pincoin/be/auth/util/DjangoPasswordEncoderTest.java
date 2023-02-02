@@ -24,8 +24,8 @@ class DjangoPasswordEncoderTest {
     }
 
     @Test
-    void 해시비교() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        boolean match = encoder.checkPassword("pincoin1234",
+    void 해시비교() {
+        boolean match = encoder.matches("pincoin1234",
                                                     "pbkdf2_sha256$390000$XXkyxeekftVu2S5qC0yW9h$FOczZWDoQ+0sNYAP5cDvZgyoi5sYy84lpgY4ngVC5nU=");
         Assertions.assertThat(match).isTrue();
     }

@@ -20,7 +20,7 @@ public class Token {
 
     private String refreshToken;
 
-    @ManyToOne(optional = false,
+    @OneToOne(optional = false,
             fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @NotNull

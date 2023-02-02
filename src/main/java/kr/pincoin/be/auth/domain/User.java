@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import kr.pincoin.be.member.domain.Profile;
+import kr.pincoin.be.member.domain.Token;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,6 +53,12 @@ public class User {
 
     @NotNull
     private LocalDateTime dateJoined;
+
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+
+    @OneToOne(mappedBy = "user")
+    private Token token;
 
     public User(String username, String password, String email) {
         this.username = username;
