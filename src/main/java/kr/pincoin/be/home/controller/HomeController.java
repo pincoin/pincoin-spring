@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @Slf4j
 public class HomeController {
-    public static final int TOKEN_EXPIRES_IN = 3600;
-
     private final AuthService authService;
 
     public HomeController(AuthService authService) {

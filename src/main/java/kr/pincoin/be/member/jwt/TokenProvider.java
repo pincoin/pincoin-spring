@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static kr.pincoin.be.auth.service.AuthService.TOKEN_EXPIRES_IN;
+
 @Slf4j
 @Component
 public class TokenProvider {
@@ -64,7 +66,7 @@ public class TokenProvider {
     }
 
     public String createToken(String username, Long id) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(env.getProperty("pincoin.jwt-secret-key")));
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key")));
 
         Map<String, Object> headers = new HashMap<>();
         headers.put("typ", "JWT");
@@ -79,7 +81,7 @@ public class TokenProvider {
                 .setSubject(username) // sub
                 // .setId("1") // jti
                 .setExpiration(Date.from(LocalDateTime.now()
-                                                 .plus(Duration.of(15, ChronoUnit.MINUTES))
+                                                 .plus(Duration.of(TOKEN_EXPIRES_IN, ChronoUnit.SECONDS))
                                                  .atZone(ZoneId.systemDefault()).toInstant())) // exp
                 .signWith(key)
                 .compact();
