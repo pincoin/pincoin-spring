@@ -7,10 +7,10 @@ import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.repository.UserRepository;
 import kr.pincoin.be.home.dto.AccessTokenResponse;
 import kr.pincoin.be.home.dto.PasswordGrantRequest;
-import kr.pincoin.be.member.domain.Token;
+import kr.pincoin.be.member.domain.RefreshToken;
 import kr.pincoin.be.member.jwt.TokenProvider;
 import kr.pincoin.be.member.repository.ProfileRepository;
-import kr.pincoin.be.member.repository.TokenRepository;
+import kr.pincoin.be.member.repository.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,49 +20,68 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static kr.pincoin.be.member.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
+
 @Service
 @Slf4j
 public class UserService {
-    public static final int TOKEN_EXPIRES_IN = 3600;
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
-    private final TokenRepository tokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
                        ProfileRepository profileRepository,
-                       TokenRepository tokenRepository,
+                       RefreshTokenRepository refreshTokenRepository,
                        TokenProvider tokenProvider,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
-        this.tokenRepository = tokenRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AccessTokenResponse authenticate(PasswordGrantRequest request) {
+    @Transactional
+    public AccessTokenResponse
+    authenticate(PasswordGrantRequest request) {
         return userRepository.findActiveUser(request.getUsername())
-                .map(user -> new AccessTokenResponse(tokenProvider.createToken(user.getUsername(), user.getId()),
-                                                     TOKEN_EXPIRES_IN))
+                .map(user -> {
+                    // 1. 액세스 토큰 생성 (디비 저장 안 함)
+                    String accessToken = tokenProvider.createAccessToken(user.getUsername(), user.getId());
+
+                    // 2. 리프레시 토큰 생성 (디비 저장)
+                    String refreshToken = tokenProvider.createRefreshToken();
+
+                    RefreshToken refreshTokenFound = refreshTokenRepository.findByUsername(user.getUsername())
+                            .orElseThrow(() -> new RuntimeException("Failed to issue refresh token"));
+
+                    refreshTokenRepository.save(refreshTokenFound.issueRefreshToken(refreshToken));
+
+                    return new AccessTokenResponse(accessToken, ACCESS_TOKEN_EXPIRES_IN, refreshToken);
+                })
                 .orElse(null);
     }
 
     @Transactional
-    public List<User> listActiveUsers() {
+    public List<User>
+    listActiveUsers() {
         return userRepository.findActiveUsers();
     }
 
     @Transactional
-    public Optional<User> getActiveUser(String username) {
+    public Optional<User>
+    getActiveUser(String username) {
         return userRepository.findActiveUser(username);
     }
 
     @Transactional
-    public UserResponse createUser(UserCreateRequest request) throws DataIntegrityViolationException,
-                                                                     ConstraintViolationException {
+    public UserResponse
+    createUser(UserCreateRequest request) throws DataIntegrityViolationException,
+                                                 ConstraintViolationException {
+        // 1. 사용자 저장
         User user = userRepository.save(new User(request.getUsername(),
                                                  passwordEncoder.encode(request.getPassword()),
                                                  request.getEmail(),
@@ -70,7 +89,8 @@ public class UserService {
                                                  request.getLastName())
                                                 .activate());
 
-        tokenRepository.save(new Token(user));
+        // 2. 리프레시 토큰 레코드 추가(아직 토큰 생성 없음)
+        refreshTokenRepository.save(new RefreshToken(user));
 
         return new UserResponse(user.getUsername(),
                                 user.getFirstName(),
@@ -84,22 +104,26 @@ public class UserService {
     }
 
     @Transactional
-    public List<User> listStaffUsers() {
+    public List<User>
+    listStaffUsers() {
         return userRepository.findStaffUsers();
     }
 
     @Transactional
-    public Optional<User> getStaffUser(String username) {
+    public Optional<User>
+    getStaffUser(String username) {
         return userRepository.findStaffUser(username);
     }
 
     @Transactional
-    public List<User> listSuperUsers() {
+    public List<User>
+    listSuperUsers() {
         return userRepository.findSuperUsers();
     }
 
     @Transactional
-    public Optional<User> getSuperUser(String username) {
+    public Optional<User>
+    getSuperUser(String username) {
         return userRepository.findSuperUser(username);
     }
 }

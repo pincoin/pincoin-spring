@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT u" +
             " FROM User u" +
-            " JOIN Token t" +
+            " JOIN FETCH RefreshToken t" +
             " WHERE u.username = :username" +
             " AND u.active = true")
     Optional<User> findActiveUserWithToken(@Param("username") String username);

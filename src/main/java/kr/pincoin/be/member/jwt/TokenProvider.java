@@ -15,16 +15,15 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static kr.pincoin.be.auth.service.UserService.TOKEN_EXPIRES_IN;
+import java.util.*;
 
 @Slf4j
 @Component
 public class TokenProvider {
+    public static final int ACCESS_TOKEN_EXPIRES_IN = 60 * 60; // 1시간
+    public static final int REFRESH_TOKEN_EXPIRES_IN = 60 * 60 * 24 * 14; // 2주
+
+
     private final Environment env;
 
     public TokenProvider(Environment env) {
@@ -56,7 +55,7 @@ public class TokenProvider {
         return null;
     }
 
-    public Optional<String> parseToken(String token) {
+    public Optional<String> validateAccessToken(String token) {
         try {
             Jws<Claims> jws = Jwts.parserBuilder()
                     .setSigningKey(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key"))).build()
@@ -75,7 +74,7 @@ public class TokenProvider {
         return Optional.empty();
     }
 
-    public String createToken(String username, Long id) {
+    public String createAccessToken(String username, Long id) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key")));
 
         Map<String, Object> headers = new HashMap<>();
@@ -91,9 +90,14 @@ public class TokenProvider {
                 .setSubject(username) // sub
                 // .setId("1") // jti
                 .setExpiration(Date.from(LocalDateTime.now()
-                                                 .plus(Duration.of(TOKEN_EXPIRES_IN, ChronoUnit.SECONDS))
+                                                 .plus(Duration.of(ACCESS_TOKEN_EXPIRES_IN, ChronoUnit.SECONDS))
                                                  .atZone(ZoneId.systemDefault()).toInstant())) // exp
                 .signWith(key)
                 .compact();
+    }
+
+    public String createRefreshToken() {
+        // 리프레시 토큰은 굳이 username 같은 사용자 정보를 담지 않으며 서버 디비에도 저장해둔다.
+        return UUID.randomUUID().toString();
     }
 }

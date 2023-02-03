@@ -8,18 +8,24 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+import static kr.pincoin.be.member.jwt.TokenProvider.REFRESH_TOKEN_EXPIRES_IN;
+
 @Entity
-@Table(name = "member_token")
+@Table(name = "member_refreshtoken")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Token extends BaseDateTime {
+public class RefreshToken extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String accessToken;
-
     private String refreshToken;
+
+    private LocalDateTime expiresIn;
 
     @OneToOne(optional = false,
             fetch = FetchType.EAGER)
@@ -27,15 +33,15 @@ public class Token extends BaseDateTime {
     @NotNull
     private User user;
 
-    public Token(User user) {
+    public RefreshToken(User user) {
         this.user = user;
     }
 
-    public void issueAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public void issueRefreshToken(String refreshToken) {
+    public RefreshToken issueRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+
+        this.expiresIn = LocalDateTime.now().plus(Duration.of(REFRESH_TOKEN_EXPIRES_IN, ChronoUnit.SECONDS));
+
+        return this;
     }
 }

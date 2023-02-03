@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
                                                        ServletException,
                                                        IOException {
 
-        // 1. 헤더에서 토큰 가져오기
+        // 1. 헤더에서 액세스 토큰 가져오기
         final Optional<String> token = Optional.ofNullable(tokenProvider.getBearerToken(request));
 
         if (token.isEmpty()) {
@@ -47,8 +47,8 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 2. 토큰 파싱 유효성 체크
-        final Optional<String> username = tokenProvider.parseToken(token.get());
+        // 2. 액세스 토큰 파싱 유효성 검증
+        final Optional<String> username = tokenProvider.validateAccessToken(token.get());
 
         if (username.isEmpty()) {
             // 토큰 포맷, 만료시각, 서명 유효성 검사 실패
