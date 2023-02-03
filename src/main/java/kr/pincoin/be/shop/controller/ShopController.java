@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ShopController {
     @GetMapping("")
-    public String Home() {
+    public String home() {
         return "Shop controller";
     }
 }

@@ -25,13 +25,13 @@ public class HomeController {
     }
 
     @GetMapping("")
-    public String Home() {
+    public String home() {
         return "pincoin be";
     }
 
     @PostMapping("/sign-up")
     public ResponseEntity<UserResponse>
-    UserCreate(@Valid @RequestBody UserCreateRequest request) {
+    createUser(@Valid @RequestBody UserCreateRequest request) {
         try {
             UserResponse response = userService.createUser(request);
             return ResponseEntity.ok().body(response);
@@ -41,9 +41,9 @@ public class HomeController {
         }
     }
 
-    @PostMapping("/access-token")
+    @PostMapping("/authenticate")
     public ResponseEntity<AccessTokenResponse>
-    AccessToken(@Valid @RequestBody PasswordGrantRequest request) {
+    authenticate(@Valid @RequestBody PasswordGrantRequest request) {
         AccessTokenResponse response = userService.authenticate(request);
 
         if (response != null) {
@@ -57,7 +57,7 @@ public class HomeController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<AccessTokenResponse>
-    RefreshToken() {
+    refreshToken() {
         return null;
     }
 }

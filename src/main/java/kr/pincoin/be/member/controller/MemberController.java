@@ -32,13 +32,13 @@ public class MemberController {
 
     @GetMapping("")
     public String
-    Home() {
+    home() {
         return "Member controller";
     }
 
     @GetMapping("/users")
     public ResponseEntity<List<UserResponse>>
-    UserList() {
+    listUser() {
         List<UserResponse> users = userService.listActiveUsers()
                 .stream()
                 .map(user -> new UserResponse(
@@ -62,7 +62,7 @@ public class MemberController {
 
     @GetMapping("/users/{username}")
     public ResponseEntity<UserResponse>
-    UserDetail(@PathVariable String username) {
+    getUser(@PathVariable String username) {
         return userService
                 .getActiveUser(username)
                 .map((user) -> ResponseEntity.ok().body(
@@ -82,7 +82,7 @@ public class MemberController {
 
     @GetMapping("/staffs")
     public ResponseEntity<List<UserResponse>>
-    StaffUserList() {
+    listStaffUsers() {
         List<UserResponse> users = userService.listStaffUsers()
                 .stream()
                 .map(user -> new UserResponse(
@@ -106,7 +106,7 @@ public class MemberController {
 
     @GetMapping("/staffs/{username}")
     public ResponseEntity<UserResponse>
-    StaffUserDetail(@PathVariable String username) {
+    getStaffUser(@PathVariable String username) {
         return userService
                 .getStaffUser(username)
                 .map((user) -> ResponseEntity.ok().body(
@@ -126,7 +126,7 @@ public class MemberController {
 
     @GetMapping("/superusers")
     public ResponseEntity<List<UserResponse>>
-    SuperUserList() {
+    listSuperUsers() {
         List<UserResponse> users = userService.listSuperUsers()
                 .stream()
                 .map(user -> new UserResponse(
@@ -150,7 +150,7 @@ public class MemberController {
 
     @GetMapping("/superusers/{username}")
     public ResponseEntity<UserResponse>
-    StaffDetail(@PathVariable String username) {
+    getSuperUser(@PathVariable String username) {
         return userService
                 .getSuperUser(username)
                 .map((user) -> ResponseEntity.ok().body(
@@ -170,7 +170,7 @@ public class MemberController {
 
     @GetMapping("/groups")
     public ResponseEntity<List<Group>>
-    GroupList() {
+    listGroups() {
         List<Group> groups = groupService.listGroups();
 
         if (groups.isEmpty()) {
@@ -182,7 +182,7 @@ public class MemberController {
 
     @GetMapping("/permissions")
     public ResponseEntity<List<Permission>>
-    PermissionList() {
+    listPermissions() {
         List<Permission> permissions = permissionService.listPermissions();
 
         if (permissions.isEmpty()) {

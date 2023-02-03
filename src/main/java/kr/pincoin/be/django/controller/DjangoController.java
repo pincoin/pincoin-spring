@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class DjangoController {
     @GetMapping("")
-    public String Home() {
+    public String home() {
         return "Django controller";
     }
 }
