@@ -34,7 +34,7 @@ public class TokenProvider {
     public String getXAuthToken(HttpServletRequest request) {
         // 헤더 형식
         // 비표준 미등록 헤더
-        // X-Auth-Token : dadas123sad12
+        // X-Auth-Token : JWT문자열=
         final String header = request.getHeader("X-AUTH-TOKEN");
 
         if (header != null && !header.isBlank()) {
@@ -46,7 +46,7 @@ public class TokenProvider {
     public String getBearerToken(HttpServletRequest request) {
         // 헤더 형식
         // RFC 7235 표준 등록 헤더
-        // Authorization: Bearer QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+        // Authorization: Bearer JWT문자열=
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (header != null && header.startsWith("Bearer ")) {
