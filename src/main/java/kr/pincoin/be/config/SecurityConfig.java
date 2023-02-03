@@ -34,10 +34,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 인증 API
 
-        // 폼 로그인 인증
+        // 폼 로그인 인증 (사용 안 함)
         http.formLogin().disable();
+        // http.logout()
+        // http.rememberMe()
 
-        // HTTP Basic 인증
+        // HTTP Basic 인증 (사용 안 함)
         http.httpBasic().disable();
 
         // CSRF
@@ -50,8 +52,8 @@ public class SecurityConfig {
 
         // 예외처리
         http.exceptionHandling()
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) // 401 Unauthorized
-                .accessDeniedHandler(new JwtAccessDeniedHandler()); // 403 Forbidden
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) // 401 Unauthorized: 로그인 실패
+                .accessDeniedHandler(new JwtAccessDeniedHandler()); // 403 Forbidden: 권한 없음
 
         // HTTP 프로토콜 헤더
         http.headers(headers -> {
@@ -93,15 +95,12 @@ public class SecurityConfig {
                                                    .requestMatchers("/access-token").permitAll()
                                                    .requestMatchers("/refresh-token").permitAll()
                                                    .requestMatchers("/sign-up").permitAll()
+                                                   .requestMatchers("/member/**").permitAll()
                                                    .anyRequest().fullyAuthenticated()
                                   );
 
         // JWT 토큰 처리 필터 추가
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-        // 폼 인증 기능 생략
-        // http.logout()
-        // http.rememberMe()
 
         return http.build();
     }

@@ -32,11 +32,21 @@ public class TokenProvider {
     }
 
     public String getXAuthToken(HttpServletRequest request) {
-        // TODO 예외처리
-        return request.getHeader("X-AUTH-TOKEN");
+        // 헤더 형식
+        // 비표준 미등록 헤더
+        // X-Auth-Token : dadas123sad12
+        final String header = request.getHeader("X-AUTH-TOKEN");
+
+        if (header != null && !header.isBlank()) {
+            return header;
+        }
+        return null;
     }
 
     public String getBearerToken(HttpServletRequest request) {
+        // 헤더 형식
+        // RFC 7235 표준 등록 헤더
+        // Authorization: Bearer QWxhZGRpbjpvcGVuIHNlc2FtZQ==
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (header != null && header.startsWith("Bearer ")) {

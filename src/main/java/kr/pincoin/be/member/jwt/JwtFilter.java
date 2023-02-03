@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
                                                        ServletException,
                                                        IOException {
 
-        // 헤더에서 토큰 가져오기
+        // 1. 헤더에서 토큰 가져오기
         final Optional<String> token = Optional.ofNullable(tokenProvider.getBearerToken(request));
 
         if (token.isEmpty()) {
@@ -47,6 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        // 2. 사용자 정보 가져오기
         final Optional<String> username = tokenProvider.getUsername(token.get());
 
         if (username.isEmpty()) {
@@ -55,9 +56,9 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 사용자정보 가져오기
         UserDetails userDetails;
 
+        // 3. 디비에 존재 여부 검사
         try {
             userDetails = userDetailsService.loadUserByUsername(username.get());
             log.debug("{} is authorized.", userDetails.getUsername());
@@ -66,6 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        // 4. 컨텍스트에 사용자 인증 처리
         // AuthenticationManager 또는 AuthenticationProvider 구현체에서 isAuthenticated() = true
         // 인증 토큰을 통과한 경우에만 이 생성자로 authentication 객체를 만든다.
         UsernamePasswordAuthenticationToken authentication =
@@ -82,6 +84,7 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         log.debug("{} is saved to security context.", userDetails.getUsername());
 
+        // 5. 이후 필터 수행
         // 스프링 시큐리티 필터들이 모두 정해진 순서대로 FilterChain에 엮인다.
         // 각자 로직을 수행하고 다음 필터 클래스의 doFilter() 메소드를 실행시킨다.
         chain.doFilter(request, response);
