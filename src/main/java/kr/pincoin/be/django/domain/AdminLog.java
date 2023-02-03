@@ -38,13 +38,13 @@ public class AdminLog {
     private String changeMessage;
 
     @ManyToOne(optional = false,
-            fetch = FetchType.EAGER)
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "content_type_id")
     @NotNull
     private ContentType contentType;
 
     @ManyToOne(optional = false,
-            fetch = FetchType.EAGER)
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull
     private User user;

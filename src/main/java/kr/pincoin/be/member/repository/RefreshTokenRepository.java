@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
     @Query(value = "SELECT rt" +
             " FROM RefreshToken rt" +
-            " JOIN FETCH User u" +
+            " JOIN FETCH rt.user u" +
             " WHERE u.username = :username" +
             " AND u.active = true")
     Optional<RefreshToken> findByUsername(@Param("username") String username);

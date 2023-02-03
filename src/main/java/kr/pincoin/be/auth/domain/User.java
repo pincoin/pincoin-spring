@@ -57,11 +57,13 @@ public class User {
     @NotNull
     private LocalDateTime dateJoined;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user",
+            fetch = FetchType.LAZY)
     private Profile profile;
 
-    @OneToOne(mappedBy = "user")
-    private RefreshToken token;
+    @OneToOne(mappedBy = "user",
+            fetch = FetchType.LAZY)
+    private RefreshToken refreshToken;
 
     public User(String username, String password, String email) {
         this.username = username;

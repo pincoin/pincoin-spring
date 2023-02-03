@@ -2,11 +2,12 @@ package kr.pincoin.be.home.controller;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import kr.pincoin.be.auth.dto.UserCreateRequest;
+import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.service.UserService;
 import kr.pincoin.be.home.dto.AccessTokenResponse;
 import kr.pincoin.be.home.dto.PasswordGrantRequest;
-import kr.pincoin.be.auth.dto.UserCreateRequest;
-import kr.pincoin.be.auth.dto.UserResponse;
+import kr.pincoin.be.home.dto.RefreshTokenRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -55,9 +56,17 @@ public class HomeController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @PostMapping("/refresh-token")
+    @PostMapping("/refresh")
     public ResponseEntity<AccessTokenResponse>
-    refreshToken() {
-        return null;
+    refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        AccessTokenResponse response = userService.refresh(request);
+
+        if (response != null) {
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
+            return ResponseEntity.ok().headers(responseHeaders).body(response);
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

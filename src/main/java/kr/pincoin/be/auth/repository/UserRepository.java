@@ -9,10 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query(value = "SELECT u FROM User u WHERE u.active = true")
+    @Query(value = "SELECT u" +
+            " FROM User u" +
+            " WHERE u.active = true")
     List<User> findActiveUsers();
 
-    @Query(value = "SELECT u FROM User u WHERE u.active = false")
+    @Query(value = "SELECT u" +
+            " FROM User u" +
+            " WHERE u.active = false")
     List<User> findInactiveUsers();
 
     @Query(value = "SELECT u" +
@@ -29,10 +33,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT u" +
             " FROM User u" +
-            " JOIN FETCH RefreshToken t" +
-            " WHERE u.username = :username" +
+            " JOIN FETCH u.refreshToken rt" +
+            " WHERE rt.refreshToken = :refreshToken" +
             " AND u.active = true")
-    Optional<User> findActiveUserWithToken(@Param("username") String username);
+    Optional<User> findActiveUserWithRefreshToken(@Param("refreshToken") String refreshToken);
 
     @Query(value = "SELECT u" +
             " FROM User u" +

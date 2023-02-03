@@ -7,6 +7,7 @@ import kr.pincoin.be.auth.dto.UserResponse;
 import kr.pincoin.be.auth.repository.UserRepository;
 import kr.pincoin.be.home.dto.AccessTokenResponse;
 import kr.pincoin.be.home.dto.PasswordGrantRequest;
+import kr.pincoin.be.home.dto.RefreshTokenRequest;
 import kr.pincoin.be.member.domain.RefreshToken;
 import kr.pincoin.be.member.jwt.TokenProvider;
 import kr.pincoin.be.member.repository.ProfileRepository;
@@ -48,20 +49,15 @@ public class UserService {
     public AccessTokenResponse
     authenticate(PasswordGrantRequest request) {
         return userRepository.findActiveUser(request.getUsername())
-                .map(user -> {
-                    // 1. 액세스 토큰 생성 (디비 저장 안 함)
-                    String accessToken = tokenProvider.createAccessToken(user.getUsername(), user.getId());
+                .map(this::getAccessTokenResponse)
+                .orElse(null);
+    }
 
-                    // 2. 리프레시 토큰 생성 (디비 저장)
-                    String refreshToken = tokenProvider.createRefreshToken();
-
-                    RefreshToken refreshTokenFound = refreshTokenRepository.findByUsername(user.getUsername())
-                            .orElseThrow(() -> new RuntimeException("Failed to issue refresh token"));
-
-                    refreshTokenRepository.save(refreshTokenFound.issueRefreshToken(refreshToken));
-
-                    return new AccessTokenResponse(accessToken, ACCESS_TOKEN_EXPIRES_IN, refreshToken);
-                })
+    @Transactional
+    public AccessTokenResponse
+    refresh(RefreshTokenRequest request) {
+        return userRepository.findActiveUserWithRefreshToken(request.getRefreshToken())
+                .map(this::getAccessTokenResponse)
                 .orElse(null);
     }
 
@@ -125,5 +121,20 @@ public class UserService {
     public Optional<User>
     getSuperUser(String username) {
         return userRepository.findSuperUser(username);
+    }
+
+    private AccessTokenResponse getAccessTokenResponse(User user) {
+        // 1. 액세스 토큰 생성 (디비 저장 안 함)
+        String accessToken = tokenProvider.createAccessToken(user.getUsername(), user.getId());
+
+        // 2. 리프레시 토큰 생성 (디비 저장)
+        String refreshToken = tokenProvider.createRefreshToken();
+
+        RefreshToken refreshTokenFound = refreshTokenRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new RuntimeException("Failed to issue refresh token"));
+
+        refreshTokenRepository.save(refreshTokenFound.issueRefreshToken(refreshToken));
+
+        return new AccessTokenResponse(accessToken, ACCESS_TOKEN_EXPIRES_IN, refreshToken);
     }
 }

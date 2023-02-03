@@ -22,7 +22,7 @@ public class Permission {
     private String name;
 
     @ManyToOne(optional = false,
-            fetch = FetchType.EAGER)
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "content_type_id")
     private ContentType contentType;
 

@@ -28,7 +28,7 @@ public class RefreshToken extends BaseDateTime {
     private LocalDateTime expiresIn;
 
     @OneToOne(optional = false,
-            fetch = FetchType.EAGER)
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull
     private User user;
