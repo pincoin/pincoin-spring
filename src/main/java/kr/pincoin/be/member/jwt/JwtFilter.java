@@ -47,8 +47,8 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 2. 사용자 정보 가져오기
-        final Optional<String> username = tokenProvider.getUsername(token.get());
+        // 2. 토큰 파싱 유효성 체크
+        final Optional<String> username = tokenProvider.parseToken(token.get());
 
         if (username.isEmpty()) {
             // 토큰 포맷, 만료시각, 서명 유효성 검사 실패
@@ -56,9 +56,9 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        // 3. 사용자 디비 조회
         UserDetails userDetails;
 
-        // 3. 디비에 존재 여부 검사
         try {
             userDetails = userDetailsService.loadUserByUsername(username.get());
             log.debug("{} is authorized.", userDetails.getUsername());

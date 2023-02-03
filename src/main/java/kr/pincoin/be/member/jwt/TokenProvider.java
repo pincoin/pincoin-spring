@@ -56,7 +56,7 @@ public class TokenProvider {
         return null;
     }
 
-    public Optional<String> getUsername(String token) {
+    public Optional<String> parseToken(String token) {
         try {
             Jws<Claims> jws = Jwts.parserBuilder()
                     .setSigningKey(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key"))).build()
