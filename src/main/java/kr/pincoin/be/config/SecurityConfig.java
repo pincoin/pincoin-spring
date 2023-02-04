@@ -82,15 +82,14 @@ public class SecurityConfig {
 
             // X-Frame-Options: SAMEORIGIN | DENY
             headers.frameOptions().sameOrigin();
-
         });
 
         // 세션관리
-        // Stateless: 인증/인가 처리 관점에서 세션 생성하지 않고 CSRF 기능 같은 보안 처리를 위해서는 세션을 생성할 수 있음
-        http.sessionManagement(session ->
-                                       session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                                               .maximumSessions(1)
-                                               .maxSessionsPreventsLogin(true));
+        // Stateless: 인증/인가 처리 관점에서 세션 생성하지 않음, (CSRF 외 보안기능에서는 세션 생성)
+        http.sessionManagement(session -> {
+            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            session.maximumSessions(1).maxSessionsPreventsLogin(true);
+        });
 
         // 요청 리소스 권한 매핑
         http.authorizeHttpRequests(auth -> auth
