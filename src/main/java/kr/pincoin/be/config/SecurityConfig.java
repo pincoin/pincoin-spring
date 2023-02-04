@@ -97,9 +97,9 @@ public class SecurityConfig {
                                            // requestMatchers().hasRole().permitAll()
                                            // requestMatchers().denyAll()
                                            .requestMatchers("/").permitAll()
+                                           .requestMatchers("/sign-up").permitAll()
                                            .requestMatchers("/authenticate").permitAll()
                                            .requestMatchers("/refresh").permitAll()
-                                           .requestMatchers("/sign-up").permitAll()
                                            // anyRequest().authenticated() - rememberMe 로그인 허용
                                            .anyRequest().fullyAuthenticated() //rememberMe 허용 안 함
                                   );
