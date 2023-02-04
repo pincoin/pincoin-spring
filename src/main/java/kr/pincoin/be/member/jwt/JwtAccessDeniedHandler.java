@@ -10,7 +10,8 @@ import java.io.IOException;
 
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
+    public void handle(HttpServletRequest request,
+                       HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
         // 403 Forbidden
         // 서버가 요청을 이해했으나 권한이 없어 요청이 거부됨

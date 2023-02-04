@@ -17,15 +17,15 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static kr.pincoin.be.member.jwt.JwtFilter.*;
+
 @Slf4j
 @Component
 public class TokenProvider {
     public static final int ACCESS_TOKEN_EXPIRES_IN = 60 * 60; // 1시간
     public static final int REFRESH_TOKEN_EXPIRES_IN = 60 * 60 * 24 * 14; // 2주
 
-
     private final Environment env;
-
     public TokenProvider(Environment env) {
         this.env = env;
     }
@@ -55,20 +55,31 @@ public class TokenProvider {
         return null;
     }
 
-    public Optional<String> validateAccessToken(String token) throws ExpiredJwtException,
-                                                                     DecodingException,
-                                                                     UnsupportedJwtException,
-                                                                     MalformedJwtException,
-                                                                     SecurityException,
-                                                                     IllegalArgumentException {
-        Jws<Claims> jws = Jwts.parserBuilder()
-                .setSigningKey(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key"))).build()
-                .parseClaimsJws(token);
+    public Optional<String> validateAccessToken(String token, HttpServletRequest request) {
+        try {
+            Jws<Claims> jws = Jwts.parserBuilder()
+                    .setSigningKey(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key"))).build()
+                    .parseClaimsJws(token);
 
-        return Optional.ofNullable(jws.getBody().getSubject());
+            return Optional.ofNullable(jws.getBody().getSubject());
+        } catch (SignatureException | DecodingException ignored) { // SignatureException deprecated, but not caught
+            request.setAttribute("exception", ERROR_INVALID_SECRET_KEY);
+            log.warn("Failed to decode JWT secret key");
+        } catch (ExpiredJwtException ignored) {
+            request.setAttribute("exception", ERROR_EXPIRED_JWT);
+            log.warn("Expired JWT");
+        } catch (UnsupportedJwtException | MalformedJwtException | SecurityException |
+                 IllegalArgumentException ignored) {
+            request.setAttribute("exception", ERROR_INVALID_TOKEN);
+            log.warn("Failed to parse JWT");
+        }
+
+        return Optional.empty();
     }
 
     public String createAccessToken(String username, Long id) {
+        // 액세스 토큰은 username 등 개인 정보 포함
+        // 엑세스 토큰은 디비에 저장 안 함
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key")));
 
         Map<String, Object> headers = new HashMap<>();
@@ -91,7 +102,8 @@ public class TokenProvider {
     }
 
     public String createRefreshToken() {
-        // 리프레시 토큰은 굳이 username 같은 사용자 정보를 담지 않으며 서버 디비에도 저장해둔다.
+        // 리프레시 토큰은 username 등 개인 정보 미포함
+        // 리프레시 토큰은 디비에 저장
         return UUID.randomUUID().toString();
     }
 }

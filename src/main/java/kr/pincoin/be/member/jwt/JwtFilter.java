@@ -1,9 +1,5 @@
 package kr.pincoin.be.member.jwt;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.DecodingException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +21,12 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+    public static final String ERROR_INVALID_SECRET_KEY = "1001";
+    public static final String ERROR_EXPIRED_JWT = "1002";
+    public static final String ERROR_INVALID_TOKEN = "1003";
+    public static final String ERROR_USER_NOT_FOUND = "1004";
+    public static final String ERROR_UNKNOWN = "1005";
+
     private final TokenProvider tokenProvider;
 
     private final UserDetailsService userDetailsService;
@@ -39,14 +41,15 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        try {
-            // 1. 헤더에서 액세스 토큰 가져오기
-            Optional.ofNullable(tokenProvider.getBearerToken(request))
-                    // 2. 액세스 토큰 파싱 유효성 검증
-                    .flatMap(tokenProvider::validateAccessToken)
-                    .ifPresent(username -> {
+        // 1. 헤더에서 액세스 토큰 가져오기
+        // 2. 액세스 토큰 파싱 유효성 검증
+        Optional.ofNullable(tokenProvider.getBearerToken(request))
+                .flatMap(token -> tokenProvider.validateAccessToken(token, request))
+                .ifPresent(username -> {
+                    UserDetails userDetails;
+                    try {
                         // 3. 사용자 디비 조회
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                        userDetails = userDetailsService.loadUserByUsername(username);
 
                         // 4. 컨텍스트에 사용자 인증 처리
                         // AuthenticationManager 또는 AuthenticationProvider 구현체에서 isAuthenticated() = true
@@ -63,19 +66,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
                         // 현재 사용자가 인증되도록 설정 후 컨텍스트에 저장
                         SecurityContextHolder.getContext().setAuthentication(authentication);
-                    });
-        } catch (ExpiredJwtException ignored) {
-            // { "error": "token_expired", "error_description": "The access token expired" }
-            log.warn("jwt 만료");
-        } catch (DecodingException | UnsupportedJwtException | MalformedJwtException | SecurityException |
-                 IllegalArgumentException ignored) {
-            // { "error": "invalid_token", "error_description": "Invalid token" }
-            log.warn("jwt 파싱 오류");
-        } catch (UsernameNotFoundException ignored) {
-            // { "error": "user_not_found", "error_description": "User does not exist" }
-            // 없는 사용자로 유효한 JWT를 요청하면 확인 필요
-            log.error("사용자 없음");
-        }
+                    } catch (UsernameNotFoundException ignored) {
+                        request.setAttribute("exception", ERROR_USER_NOT_FOUND);
+                        log.warn("{} is not found.", username);
+                    }
+                });
 
         // 5. 이후 필터 수행
         chain.doFilter(request, response);
