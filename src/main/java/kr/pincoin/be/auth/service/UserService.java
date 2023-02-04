@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +57,7 @@ public class UserService {
     @Transactional
     public AccessTokenResponse
     refresh(RefreshTokenRequest request) {
-        return userRepository.findActiveUserWithRefreshToken(request.getRefreshToken())
+        return userRepository.findActiveUserWithRefreshToken(request.getRefreshToken(), LocalDateTime.now())
                 .map(this::getAccessTokenResponse)
                 .orElse(null);
     }
