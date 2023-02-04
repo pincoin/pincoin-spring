@@ -74,9 +74,8 @@ public class SecurityConfig {
             // Expires: 0
             headers.cacheControl();
 
-            if (!contentSecurityPolicy.equalsIgnoreCase("none")) {
-                headers.contentSecurityPolicy(contentSecurityPolicy);
-            }
+            // Content-Security-Policy: default-src 'none'
+            headers.contentSecurityPolicy(contentSecurityPolicy);
 
             // X-Content-Type-Options: nosniff
             headers.contentTypeOptions();
