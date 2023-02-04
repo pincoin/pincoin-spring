@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import kr.pincoin.be.member.domain.Profile;
-import kr.pincoin.be.member.domain.RefreshToken;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,13 +55,14 @@ public class User {
     @NotNull
     private LocalDateTime dateJoined;
 
-    @OneToOne(mappedBy = "user",
-            fetch = FetchType.LAZY)
-    private Profile profile;
-
-    @OneToOne(mappedBy = "user",
-            fetch = FetchType.LAZY)
-    private RefreshToken refreshToken;
+    /*
+     @OneToOne 양방향 매핑은 LAZY 로딩이 동작하지 않는다.
+     참조하는 쪽에서 JOIN FETCH
+     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+     private Profile profile;
+     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+     private RefreshToken refreshToken;
+    */
 
     public User(String username, String password, String email) {
         this.username = username;
