@@ -28,23 +28,23 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         try {
             if (exception == null) {
                 setResponse(response,
-                            ERROR_UNKNOWN,
+                            ERROR_401_UNKNOWN,
                             "알 수 없는 오류");
-            } else if (exception.equals(ERROR_INVALID_SECRET_KEY)) {
+            } else if (exception.equals(ERROR_401_INVALID_SECRET_KEY)) {
                 setResponse(response,
-                            ERROR_INVALID_SECRET_KEY,
-                            "잘못된 비밀키");
-            } else if (exception.equals(ERROR_EXPIRED_JWT)) {
+                            ERROR_401_INVALID_SECRET_KEY,
+                            "잘못된 서명키");
+            } else if (exception.equals(ERROR_401_EXPIRED_JWT)) {
                 setResponse(response,
-                            ERROR_EXPIRED_JWT,
+                            ERROR_401_EXPIRED_JWT,
                             "만료된 토큰");
-            } else if (exception.equals(ERROR_INVALID_TOKEN)) {
+            } else if (exception.equals(ERROR_401_INVALID_TOKEN)) {
                 setResponse(response,
-                            ERROR_INVALID_TOKEN,
+                            ERROR_401_INVALID_TOKEN,
                             "잘못된 토큰 형식");
-            } else if (exception.equals(ERROR_USER_NOT_FOUND)) {
+            } else if (exception.equals(ERROR_401_USER_NOT_FOUND)) {
                 setResponse(response,
-                            ERROR_USER_NOT_FOUND,
+                            ERROR_401_USER_NOT_FOUND,
                             "사용자 없음");
             }
         } catch (JSONException e) {

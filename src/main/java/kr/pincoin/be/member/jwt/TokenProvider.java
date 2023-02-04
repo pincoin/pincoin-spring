@@ -63,15 +63,12 @@ public class TokenProvider {
 
             return Optional.ofNullable(jws.getBody().getSubject());
         } catch (SignatureException | DecodingException ignored) { // SignatureException deprecated, but not caught
-            request.setAttribute("exception", ERROR_INVALID_SECRET_KEY);
-            log.warn("Failed to decode JWT secret key");
+            request.setAttribute("exception", ERROR_401_INVALID_SECRET_KEY);
         } catch (ExpiredJwtException ignored) {
-            request.setAttribute("exception", ERROR_EXPIRED_JWT);
-            log.warn("Expired JWT");
+            request.setAttribute("exception", ERROR_401_EXPIRED_JWT);
         } catch (UnsupportedJwtException | MalformedJwtException | SecurityException |
                  IllegalArgumentException ignored) {
-            request.setAttribute("exception", ERROR_INVALID_TOKEN);
-            log.warn("Failed to parse JWT");
+            request.setAttribute("exception", ERROR_401_INVALID_TOKEN);
         }
 
         return Optional.empty();
