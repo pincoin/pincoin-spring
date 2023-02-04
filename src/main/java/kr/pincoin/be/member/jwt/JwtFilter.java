@@ -34,9 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain chain) throws
-                                                       ServletException,
-                                                       IOException {
+                                    FilterChain chain) throws ServletException, IOException {
         // 1. 헤더에서 액세스 토큰 가져오기
         Optional.ofNullable(tokenProvider.getBearerToken(request))
                 // 2. 액세스 토큰 파싱 유효성 검증
@@ -48,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                         // 4. 컨텍스트에 사용자 인증 처리
                         // AuthenticationManager 또는 AuthenticationProvider 구현체에서 isAuthenticated() = true
-                        // 인증 토큰을 통과한 경우에만 이 생성자로 authentication 객체를 만든다.
+                        // 인증 토큰을 통과한 경우에만 이 생성자로 authentication 객체 생성
                         UsernamePasswordAuthenticationToken authentication =
                                 new UsernamePasswordAuthenticationToken(
                                         userDetails, // principal: userDetails
@@ -59,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         // 인증부가기능(WebAuthenticationDetails, WebAuthenticationDetailsSource) 저장
                         // authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                        // 컨텍스트에 인증을 설정 한 후 현재 사용자가 인증되도록 지정한다.
+                        // 현재 사용자가 인증되도록 설정 후 컨텍스트에 저장
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     } catch (UsernameNotFoundException ignored) {
                         log.warn("{} is not found.", username);
