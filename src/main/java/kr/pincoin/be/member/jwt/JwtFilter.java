@@ -61,8 +61,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             userDetails = userDetailsService.loadUserByUsername(username.get());
-            log.debug("{} is authorized.", userDetails.getUsername());
         } catch (UsernameNotFoundException ignored) {
+            log.warn("{} is not found.", username.get());
             chain.doFilter(request, response);
             return;
         }
@@ -82,7 +82,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // 컨텍스트에 인증을 설정 한 후 현재 사용자가 인증되도록 지정한다.
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.debug("{} is saved to security context.", userDetails.getUsername());
 
         // 5. 이후 필터 수행
         // 스프링 시큐리티 필터들이 모두 정해진 순서대로 FilterChain에 엮인다.

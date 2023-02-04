@@ -56,25 +56,24 @@ public class SecurityConfig {
                 .accessDeniedHandler(new JwtAccessDeniedHandler()); // 403 Forbidden: 권한 없음
 
         // HTTP 프로토콜 헤더
-        http.headers(headers -> {
-            // Strict-Transport-Security: max-age=31536000 ; includeSubDomains ; preload
-            headers.httpStrictTransportSecurity()
-                    .includeSubDomains(true)
-                    .maxAgeInSeconds(31536000)
-                    .preload(true)
-                    //X-XSS-Protection: 1; mode=block
-                    .and().xssProtection().headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
-                    // Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-                    // Pragma: no-cache
-                    // Expires: 0
-                    .and().cacheControl()
-                    // X-Content-Type-Options: nosniff
-                    .and().contentSecurityPolicy(
-                            "default-src 'self'; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com getbootstrap.com;")
-                    .and().contentTypeOptions()
-                    // X-Frame-Options: SAMEORIGIN | DENY
-                    .and().frameOptions().sameOrigin();
-        });
+        http.headers(headers -> headers
+                // Strict-Transport-Security: max-age=31536000 ; includeSubDomains ; preload
+                .httpStrictTransportSecurity()
+                .includeSubDomains(true)
+                .maxAgeInSeconds(31536000)
+                .preload(true)
+                //X-XSS-Protection: 1; mode=block
+                .and().xssProtection().headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
+                // Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+                // Pragma: no-cache
+                // Expires: 0
+                .and().cacheControl()
+                // X-Content-Type-Options: nosniff
+                .and().contentSecurityPolicy(
+                        "default-src 'self'; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com getbootstrap.com;")
+                .and().contentTypeOptions()
+                // X-Frame-Options: SAMEORIGIN | DENY
+                .and().frameOptions().sameOrigin());
 
         // 세션관리 (stateless 세션 관리 없음)
         http.sessionManagement(session ->
@@ -83,20 +82,16 @@ public class SecurityConfig {
                                                .maxSessionsPreventsLogin(true));
 
         // 요청 리소스 권한 매핑
-        http.authorizeHttpRequests(auth ->
+        http.authorizeHttpRequests(auth -> auth
                                            // 인가 API 예시
                                            // requestMatchers().hasRole().permitAll()
-                                           // requestMatchers().permitAll()
                                            // requestMatchers().denyAll()
-                                           // anyRequest().authenticated()
-                                           // anyRequest().fullyAuthenticated() // 인증된 사용자만 접근 가능 단, rememberMe 이용 시 접근 불가
-                                           auth
-                                                   .requestMatchers("/").permitAll()
-                                                   .requestMatchers("/authenticate").permitAll()
-                                                   .requestMatchers("/refresh").permitAll()
-                                                   .requestMatchers("/sign-up").permitAll()
-                                                   .requestMatchers("/member/**").permitAll()
-                                                   .anyRequest().fullyAuthenticated()
+                                           .requestMatchers("/").permitAll()
+                                           .requestMatchers("/authenticate").permitAll()
+                                           .requestMatchers("/refresh").permitAll()
+                                           .requestMatchers("/sign-up").permitAll()
+                                           // anyRequest().authenticated() - rememberMe 로그인 허용
+                                           .anyRequest().fullyAuthenticated() //rememberMe 허용 안 함
                                   );
 
         // JWT 토큰 처리 필터 추가
