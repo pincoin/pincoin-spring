@@ -33,7 +33,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT u" +
             " FROM User u" +
-            " JOIN FETCH u.refreshToken rt" +
+            " JOIN FETCH RefreshToken rt" +
+            " ON u.id = rt.user.id " +
             " WHERE rt.refreshToken = :refreshToken" +
             " AND u.active = true")
     Optional<User> findActiveUserWithRefreshToken(@Param("refreshToken") String refreshToken);
