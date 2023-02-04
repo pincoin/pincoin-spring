@@ -32,8 +32,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findInactiveUser(@Param("username") String username);
 
     @Query(value = "SELECT u" +
-            " FROM User u" +
-            " JOIN FETCH RefreshToken rt" +
+            " FROM RefreshToken rt" +
+            " JOIN FETCH User u" +
             " ON u.id = rt.user.id " +
             " WHERE rt.refreshToken = :refreshToken" +
             " AND u.active = true")
