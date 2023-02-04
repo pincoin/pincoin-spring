@@ -6,7 +6,7 @@ import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -22,13 +22,11 @@ import static kr.pincoin.be.member.jwt.JwtFilter.*;
 @Slf4j
 @Component
 public class TokenProvider {
+    @Value("${pincoin.security.jwt-secret-key}")
+    private String jwtSecretSignKey;
+
     public static final int ACCESS_TOKEN_EXPIRES_IN = 60 * 60; // 1시간
     public static final int REFRESH_TOKEN_EXPIRES_IN = 60 * 60 * 24 * 14; // 2주
-
-    private final Environment env;
-    public TokenProvider(Environment env) {
-        this.env = env;
-    }
 
     public String getXAuthToken(HttpServletRequest request) {
         // 헤더 형식
@@ -58,7 +56,7 @@ public class TokenProvider {
     public Optional<String> validateAccessToken(String token, HttpServletRequest request) {
         try {
             Jws<Claims> jws = Jwts.parserBuilder()
-                    .setSigningKey(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key"))).build()
+                    .setSigningKey(Decoders.BASE64.decode(jwtSecretSignKey)).build()
                     .parseClaimsJws(token);
 
             return Optional.ofNullable(jws.getBody().getSubject());
@@ -77,7 +75,7 @@ public class TokenProvider {
     public String createAccessToken(String username, Long id) {
         // 액세스 토큰은 username 등 개인 정보 포함
         // 엑세스 토큰은 디비에 저장 안 함
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key")));
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecretSignKey));
 
         Map<String, Object> headers = new HashMap<>();
         headers.put("typ", "JWT");

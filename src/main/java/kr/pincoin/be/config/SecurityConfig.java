@@ -6,6 +6,7 @@ import kr.pincoin.be.member.jwt.JwtAuthenticationEntryPoint;
 import kr.pincoin.be.member.jwt.JwtFilter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,6 +25,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Getter
 @Slf4j
 public class SecurityConfig {
+    @Value("${pincoin.security.content-security-policy}")
+    private String contentSecurityPolicy;
+
     private final JwtFilter jwtFilter;
 
     public SecurityConfig(JwtFilter jwtFilter) {
@@ -56,24 +60,26 @@ public class SecurityConfig {
                 .accessDeniedHandler(new JwtAccessDeniedHandler()); // 403 Forbidden: 권한 없음
 
         // HTTP 프로토콜 헤더
-        http.headers(headers -> headers
-                // Strict-Transport-Security: max-age=31536000 ; includeSubDomains ; preload
-                .httpStrictTransportSecurity()
-                .includeSubDomains(true)
-                .maxAgeInSeconds(31536000)
-                .preload(true)
-                //X-XSS-Protection: 1; mode=block
-                .and().xssProtection().headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
-                // Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-                // Pragma: no-cache
-                // Expires: 0
-                .and().cacheControl()
-                // X-Content-Type-Options: nosniff
-                .and().contentSecurityPolicy(
-                        "default-src 'self'; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com getbootstrap.com;")
-                .and().contentTypeOptions()
-                // X-Frame-Options: SAMEORIGIN | DENY
-                .and().frameOptions().sameOrigin());
+        http.headers(headers -> {
+                         headers
+                                 // Strict-Transport-Security: max-age=31536000 ; includeSubDomains ; preload
+                                 .httpStrictTransportSecurity()
+                                 .includeSubDomains(true)
+                                 .maxAgeInSeconds(31536000)
+                                 .preload(true)
+                                 //X-XSS-Protection: 1; mode=block
+                                 .and().xssProtection().headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
+                                 // Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+                                 // Pragma: no-cache
+                                 // Expires: 0
+                                 .and().cacheControl()
+                                 .and().contentSecurityPolicy(contentSecurityPolicy)
+                                 // X-Content-Type-Options: nosniff
+                                 .and().contentTypeOptions()
+                                 // X-Frame-Options: SAMEORIGIN | DENY
+                                 .and().frameOptions().sameOrigin();
+
+                     });
 
         // 세션관리 (stateless 세션 관리 없음)
         http.sessionManagement(session ->
