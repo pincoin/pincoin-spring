@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name="Permission")
 @Table(name = "auth_permission")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

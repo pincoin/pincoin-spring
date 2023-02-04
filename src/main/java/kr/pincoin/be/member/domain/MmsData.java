@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name="MmsData")
 @Table(name = "member_mmsdata")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

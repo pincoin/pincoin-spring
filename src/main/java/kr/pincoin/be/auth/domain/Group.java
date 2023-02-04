@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name="Group")
 @Table(name = "auth_group")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

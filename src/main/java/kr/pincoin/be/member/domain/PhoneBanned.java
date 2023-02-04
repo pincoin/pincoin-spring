@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name="PhoneBanned")
 @Table(name = "member_phonebanned")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
