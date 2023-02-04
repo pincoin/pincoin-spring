@@ -38,7 +38,7 @@ public class MemberController {
 
     @GetMapping("/users")
     public ResponseEntity<List<UserResponse>>
-    listUser() {
+    listUsers() {
         List<UserResponse> users = userService.listActiveUsers()
                 .stream()
                 .map(user -> new UserResponse(
