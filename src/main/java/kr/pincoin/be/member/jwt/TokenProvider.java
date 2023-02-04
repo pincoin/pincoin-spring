@@ -55,23 +55,17 @@ public class TokenProvider {
         return null;
     }
 
-    public Optional<String> validateAccessToken(String token) {
-        try {
-            Jws<Claims> jws = Jwts.parserBuilder()
-                    .setSigningKey(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key"))).build()
-                    .parseClaimsJws(token);
+    public Optional<String> validateAccessToken(String token) throws ExpiredJwtException,
+                                                                     DecodingException,
+                                                                     UnsupportedJwtException,
+                                                                     MalformedJwtException,
+                                                                     SecurityException,
+                                                                     IllegalArgumentException {
+        Jws<Claims> jws = Jwts.parserBuilder()
+                .setSigningKey(Decoders.BASE64.decode(env.getProperty("jwt.secret-sign-key"))).build()
+                .parseClaimsJws(token);
 
-            return Optional.ofNullable(jws.getBody().getSubject());
-        } catch (DecodingException ignored) {
-            log.warn("Failed to decode JWT secret key");
-        } catch (ExpiredJwtException ignored) {
-            log.warn("Expired JWT");
-        } catch (UnsupportedJwtException | MalformedJwtException | SecurityException |
-                 IllegalArgumentException ignored) {
-            log.warn("Failed to parse JWT");
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(jws.getBody().getSubject());
     }
 
     public String createAccessToken(String username, Long id) {

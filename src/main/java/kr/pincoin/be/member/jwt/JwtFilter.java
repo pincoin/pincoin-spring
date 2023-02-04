@@ -1,5 +1,9 @@
 package kr.pincoin.be.member.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.DecodingException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,12 +39,12 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        // 1. 헤더에서 액세스 토큰 가져오기
-        Optional.ofNullable(tokenProvider.getBearerToken(request))
-                // 2. 액세스 토큰 파싱 유효성 검증
-                .flatMap(tokenProvider::validateAccessToken)
-                .ifPresent(username -> {
-                    try {
+        try {
+            // 1. 헤더에서 액세스 토큰 가져오기
+            Optional.ofNullable(tokenProvider.getBearerToken(request))
+                    // 2. 액세스 토큰 파싱 유효성 검증
+                    .flatMap(tokenProvider::validateAccessToken)
+                    .ifPresent(username -> {
                         // 3. 사용자 디비 조회
                         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -59,10 +63,19 @@ public class JwtFilter extends OncePerRequestFilter {
 
                         // 현재 사용자가 인증되도록 설정 후 컨텍스트에 저장
                         SecurityContextHolder.getContext().setAuthentication(authentication);
-                    } catch (UsernameNotFoundException ignored) {
-                        log.warn("{} is not found.", username);
-                    }
-                });
+                    });
+        } catch (ExpiredJwtException ignored) {
+            // { "error": "token_expired", "error_description": "The access token expired" }
+            log.warn("jwt 만료");
+        } catch (DecodingException | UnsupportedJwtException | MalformedJwtException | SecurityException |
+                 IllegalArgumentException ignored) {
+            // { "error": "invalid_token", "error_description": "Invalid token" }
+            log.warn("jwt 파싱 오류");
+        } catch (UsernameNotFoundException ignored) {
+            // { "error": "user_not_found", "error_description": "User does not exist" }
+            // 없는 사용자로 유효한 JWT를 요청하면 확인 필요
+            log.error("사용자 없음");
+        }
 
         // 5. 이후 필터 수행
         chain.doFilter(request, response);
