@@ -61,27 +61,33 @@ public class SecurityConfig {
 
         // HTTP 프로토콜 헤더
         http.headers(headers -> {
-                         headers
-                                 // Strict-Transport-Security: max-age=31536000 ; includeSubDomains ; preload
-                                 .httpStrictTransportSecurity()
-                                 .includeSubDomains(true)
-                                 .maxAgeInSeconds(31536000)
-                                 .preload(true)
-                                 //X-XSS-Protection: 1; mode=block
-                                 .and().xssProtection().headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
-                                 // Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-                                 // Pragma: no-cache
-                                 // Expires: 0
-                                 .and().cacheControl()
-                                 .and().contentSecurityPolicy(contentSecurityPolicy)
-                                 // X-Content-Type-Options: nosniff
-                                 .and().contentTypeOptions()
-                                 // X-Frame-Options: SAMEORIGIN | DENY
-                                 .and().frameOptions().sameOrigin();
+            headers.defaultsDisabled();
 
-                     });
+            // Strict-Transport-Security: max-age=31536000 ; includeSubDomains ; preload
+            headers.httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(31536000).preload(true);
 
-        // 세션관리 (stateless 세션 관리 없음)
+            //X-XSS-Protection: 1; mode=block
+            headers.xssProtection().headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK);
+
+            // Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+            // Pragma: no-cache
+            // Expires: 0
+            headers.cacheControl();
+
+            if (!contentSecurityPolicy.equalsIgnoreCase("none")) {
+                headers.contentSecurityPolicy(contentSecurityPolicy);
+            }
+
+            // X-Content-Type-Options: nosniff
+            headers.contentTypeOptions();
+
+            // X-Frame-Options: SAMEORIGIN | DENY
+            headers.frameOptions().sameOrigin();
+
+        });
+
+        // 세션관리
+        // Stateless: 인증/인가 처리 관점에서 세션 생성하지 않고 CSRF 기능 같은 보안 처리를 위해서는 세션을 생성할 수 있음
         http.sessionManagement(session ->
                                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                                                .maximumSessions(1)
