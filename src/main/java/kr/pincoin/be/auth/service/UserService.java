@@ -50,7 +50,14 @@ public class UserService {
     public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request) {
         return userRepository.findActiveUser(request.getUsername())
-                .map(this::getAccessTokenResponse);
+                .map(user -> {
+                    AccessTokenResponse response = null;
+                    if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                        response = getAccessTokenResponse(user);
+                    }
+                    return Optional.ofNullable(response);
+                })
+                .orElseGet(Optional::empty);
     }
 
     @Transactional
@@ -84,7 +91,7 @@ public class UserService {
                                                  request.getLastName())
                                                 .activate());
 
-        // 2. 리프레시 토큰 레코드 추가(아직 토큰 생성 없음)
+        // 2. 리프레시 토큰 레코드 추가(아직 토큰 생성 안 함- > 향후 Redis로 교체)
         refreshTokenRepository.save(new RefreshToken(user));
 
         return new UserResponse(user.getUsername(),
