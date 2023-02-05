@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
+    // Impl 구현체: 별도로 교체 가능한 빈 생성하지 않음
     private final UserRepository userRepository;
 
     public UserDetailsServiceImpl(UserRepository userRepository) {

@@ -21,6 +21,8 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+    // OncePerRequestFilter: 요청에서 한 번만 실행 보장
+    // GenericFilterBean: 요청 결과를 재활용하여 필터가 여러번 실행 될 가능성 있음
     public static final String ERROR_401_INVALID_SECRET_KEY = "1001";
     public static final String ERROR_401_EXPIRED_JWT = "1002";
     public static final String ERROR_401_INVALID_TOKEN = "1003";
