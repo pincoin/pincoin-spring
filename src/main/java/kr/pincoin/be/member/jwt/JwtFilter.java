@@ -41,10 +41,9 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        // 1. 헤더에서 액세스 토큰 가져오기
-        // 2. 액세스 토큰 파싱 유효성 검증
-        Optional.ofNullable(tokenProvider.getBearerToken(request))
-                .flatMap(token -> tokenProvider.validateAccessToken(token, request))
+
+        Optional.ofNullable(tokenProvider.getBearerToken(request)) // 1. 헤더에서 액세스 토큰 가져오기
+                .flatMap(token -> tokenProvider.validateAccessToken(token, request)) // 2. 액세스 토큰 파싱 유효성 검증
                 .ifPresent(username -> {
                     UserDetails userDetails;
                     try {
