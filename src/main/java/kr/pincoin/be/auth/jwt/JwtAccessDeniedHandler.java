@@ -1,4 +1,4 @@
-package kr.pincoin.be.member.jwt;
+package kr.pincoin.be.auth.jwt;
 
 
 import jakarta.servlet.http.HttpServletRequest;

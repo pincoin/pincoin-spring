@@ -1,9 +1,9 @@
 package kr.pincoin.be.config;
 
 import kr.pincoin.be.auth.util.DjangoPasswordEncoder;
-import kr.pincoin.be.member.jwt.JwtAccessDeniedHandler;
-import kr.pincoin.be.member.jwt.JwtAuthenticationEntryPoint;
-import kr.pincoin.be.member.jwt.JwtFilter;
+import kr.pincoin.be.auth.jwt.JwtAccessDeniedHandler;
+import kr.pincoin.be.auth.jwt.JwtAuthenticationEntryPoint;
+import kr.pincoin.be.auth.jwt.JwtFilter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Getter
 @Slf4j
 public class SecurityConfig {
-    @Value("${pincoin.security.content-security-policy}")
+    @Value("${security-config.content-security-policy}")
     private String contentSecurityPolicy;
 
     private final JwtFilter jwtFilter;

@@ -1,4 +1,4 @@
-package kr.pincoin.be.member.jwt;
+package kr.pincoin.be.auth.jwt;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +11,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 
 import java.io.IOException;
 
-import static kr.pincoin.be.member.jwt.JwtFilter.*;
+import static kr.pincoin.be.auth.jwt.JwtFilter.*;
 
 @Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {

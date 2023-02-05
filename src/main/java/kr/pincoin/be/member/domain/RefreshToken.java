@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static kr.pincoin.be.member.jwt.TokenProvider.REFRESH_TOKEN_EXPIRES_IN;
+import static kr.pincoin.be.auth.jwt.TokenProvider.REFRESH_TOKEN_EXPIRES_IN;
 
 @Entity
 @Table(name = "member_refreshtoken")

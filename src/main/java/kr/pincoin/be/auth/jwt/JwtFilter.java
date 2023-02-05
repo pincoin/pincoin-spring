@@ -1,4 +1,4 @@
-package kr.pincoin.be.member.jwt;
+package kr.pincoin.be.auth.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -41,11 +41,11 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-
         Optional.ofNullable(tokenProvider.getBearerToken(request)) // 1. 헤더에서 액세스 토큰 가져오기
-                .flatMap(token -> tokenProvider.validateAccessToken(token, request)) // 2. 액세스 토큰 파싱 유효성 검증
+                .flatMap(token -> tokenProvider.validateAccessToken(token, request)) // 2. 토큰 검증 후 사용자 가져오기
                 .ifPresent(username -> {
                     UserDetails userDetails;
+
                     try {
                         // 3. 사용자 디비 조회
                         userDetails = userDetailsService.loadUserByUsername(username);

@@ -9,7 +9,7 @@ import kr.pincoin.be.home.dto.AccessTokenResponse;
 import kr.pincoin.be.home.dto.PasswordGrantRequest;
 import kr.pincoin.be.home.dto.RefreshTokenRequest;
 import kr.pincoin.be.member.domain.RefreshToken;
-import kr.pincoin.be.member.jwt.TokenProvider;
+import kr.pincoin.be.auth.jwt.TokenProvider;
 import kr.pincoin.be.member.repository.ProfileRepository;
 import kr.pincoin.be.member.repository.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static kr.pincoin.be.member.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
+import static kr.pincoin.be.auth.jwt.TokenProvider.ACCESS_TOKEN_EXPIRES_IN;
 
 @Service
 @Slf4j

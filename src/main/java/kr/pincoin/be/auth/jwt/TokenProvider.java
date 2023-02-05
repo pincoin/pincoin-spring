@@ -1,4 +1,4 @@
-package kr.pincoin.be.member.jwt;
+package kr.pincoin.be.auth.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -17,12 +17,12 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static kr.pincoin.be.member.jwt.JwtFilter.*;
+import static kr.pincoin.be.auth.jwt.JwtFilter.*;
 
 @Slf4j
 @Component
 public class TokenProvider {
-    @Value("${pincoin.security.jwt-secret-key}")
+    @Value("${auth.jwt-secret-key}")
     private String jwtSecretSignKey;
 
     public static final int ACCESS_TOKEN_EXPIRES_IN = 60 * 60; // 1시간
