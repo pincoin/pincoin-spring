@@ -45,28 +45,24 @@ public class HomeController {
     @PostMapping("/authenticate")
     public ResponseEntity<AccessTokenResponse>
     authenticate(@Valid @RequestBody PasswordGrantRequest request) {
-        AccessTokenResponse response = userService.authenticate(request);
-
-        if (response != null) {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
-            return ResponseEntity.ok().headers(responseHeaders).body(response);
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return userService.authenticate(request)
+                .map(response -> {
+                    HttpHeaders responseHeaders = new HttpHeaders();
+                    responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
+                    return ResponseEntity.ok().headers(responseHeaders).body(response);
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<AccessTokenResponse>
     refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
-        AccessTokenResponse response = userService.refresh(request);
-
-        if (response != null) {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
-            return ResponseEntity.ok().headers(responseHeaders).body(response);
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return userService.refresh(request)
+                .map(response -> {
+                    HttpHeaders responseHeaders = new HttpHeaders();
+                    responseHeaders.add("Authorization", "Bearer " + response.getAccessToken());
+                    return ResponseEntity.ok().headers(responseHeaders).body(response);
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 }

@@ -47,19 +47,17 @@ public class UserService {
     }
 
     @Transactional
-    public AccessTokenResponse
+    public Optional<AccessTokenResponse>
     authenticate(PasswordGrantRequest request) {
         return userRepository.findActiveUser(request.getUsername())
-                .map(this::getAccessTokenResponse)
-                .orElse(null);
+                .map(this::getAccessTokenResponse);
     }
 
     @Transactional
-    public AccessTokenResponse
+    public Optional<AccessTokenResponse>
     refresh(RefreshTokenRequest request) {
         return userRepository.findActiveUserWithRefreshToken(request.getRefreshToken(), LocalDateTime.now())
-                .map(this::getAccessTokenResponse)
-                .orElse(null);
+                .map(this::getAccessTokenResponse);
     }
 
     @Transactional
