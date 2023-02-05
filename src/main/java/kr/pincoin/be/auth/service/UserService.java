@@ -83,6 +83,11 @@ public class UserService {
     public UserResponse
     createUser(UserCreateRequest request) throws DataIntegrityViolationException,
                                                  ConstraintViolationException {
+        // 프론트엔드 체크 항목
+        // 중복회원검사
+        // 본인인증: 휴대폰인증, 이메일인증
+        // 약관동의 (필수는 디비 저장 안 하고 옵션 사항만 저장)
+
         // 1. 사용자 저장
         User user = userRepository.save(new User(request.getUsername(),
                                                  passwordEncoder.encode(request.getPassword()),
