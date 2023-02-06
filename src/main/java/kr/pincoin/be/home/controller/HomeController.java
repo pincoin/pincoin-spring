@@ -25,9 +25,9 @@ public class HomeController {
         this.userService = userService;
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     public String home() {
-        return "pincoin be";
+        return "pincoin api";
     }
 
     @PostMapping("/sign-up")
