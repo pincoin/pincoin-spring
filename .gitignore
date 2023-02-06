@@ -65,4 +65,5 @@ secrets.yml
 .sts4-cache
 
 # Project
+!gradle/wrapper/gradle-wrapper.jar
 application-*.yaml
