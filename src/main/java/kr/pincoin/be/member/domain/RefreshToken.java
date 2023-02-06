@@ -23,6 +23,7 @@ public class RefreshToken extends BaseDateTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "char(32)")
     private String refreshToken;
 
     private LocalDateTime expiresIn;
