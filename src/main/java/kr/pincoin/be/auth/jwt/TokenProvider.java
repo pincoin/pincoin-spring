@@ -22,6 +22,8 @@ import static kr.pincoin.be.auth.jwt.JwtFilter.*;
 @Slf4j
 @Component
 public class TokenProvider {
+    // JWT 암호화, 복호화 비밀키
+    // HS256 알고리즘을 이용하므로 256비트(알파벳숫자 32자) 이상
     @Value("${auth.jwt-secret-key}")
     private String jwtSecretSignKey;
 

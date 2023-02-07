@@ -28,12 +28,26 @@ public class SecurityConfig {
     @Value("${security-config.content-security-policy}")
     private String contentSecurityPolicy;
 
+    @Value("${security-config.cors.origins}")
+    private String corsOrigins;
+
+    @Value("${security-config.cors.headers}")
+    private String corsHeaders;
+
+    @Value("${security-config.cors.methods}")
+    private String corsMethods;
+
+    @Value("${security-config.cors.allow-credentials}")
+    private boolean corsAllowCredentials;
+
     private final JwtFilter jwtFilter;
 
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
 
+    // 과거: WebSecurityConfigurerAdapter 클래스를 상속 후 스프링 시큐리티 설정(deprecated)
+    // 현재: 빈 설정을 통해 스프링 시큐리티 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 인증 API
@@ -119,10 +133,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
+        configuration.addAllowedOriginPattern(corsOrigins);
+        configuration.addAllowedHeader(corsHeaders);
+        configuration.addAllowedMethod(corsMethods);
+        configuration.setAllowCredentials(corsAllowCredentials);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
