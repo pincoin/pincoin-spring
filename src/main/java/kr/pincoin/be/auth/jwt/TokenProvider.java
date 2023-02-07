@@ -99,6 +99,8 @@ public class TokenProvider {
     public String createRefreshToken() {
         // 리프레시 토큰은 username 등 개인 정보 미포함
         // 리프레시 토큰은 디비에 저장
-        return UUID.randomUUID().toString();
+
+        // 장고 마이그레이션 char(32), 자바 36바이트 (대시 포함)
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

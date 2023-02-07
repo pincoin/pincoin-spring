@@ -24,7 +24,7 @@ public class RefreshToken extends BaseDateTime {
     private Long id;
 
     @Column(columnDefinition = "char(32)")
-    private String refreshToken;
+    private String refreshToken; // 장고 마이그레이션 char(32), 자바 36바이트 (대시 포함)
 
     private LocalDateTime expiresIn;
 
