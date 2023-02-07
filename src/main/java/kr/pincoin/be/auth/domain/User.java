@@ -19,26 +19,32 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "password")
     @NotNull
     @NotBlank
     private String password;
 
+    @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
     @Column(name = "is_superuser")
     @NotNull
     private boolean superuser;
 
+    @Column(name = "username")
     @NotNull
     @NotBlank
     private String username;
 
+    @Column(name = "first_name")
     @NotNull
     private String firstName;
 
+    @Column(name = "last_name")
     @NotNull
     private String lastName;
 
+    @Column(name = "email")
     @NotNull
     @NotBlank
     @Email
@@ -52,6 +58,7 @@ public class User {
     @NotNull
     private boolean active;
 
+    @Column(name = "date_joined")
     @NotNull
     private LocalDateTime dateJoined;
 

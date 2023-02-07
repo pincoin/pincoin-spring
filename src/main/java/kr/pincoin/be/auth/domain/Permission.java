@@ -17,6 +17,7 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name")
     @NotNull
     @NotBlank
     private String name;
@@ -26,6 +27,7 @@ public class Permission {
     @JoinColumn(name = "content_type_id")
     private ContentType contentType;
 
+    @Column(name = "codename")
     @NotNull
     @NotBlank
     private String codename;

@@ -16,6 +16,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name")
     @NotNull
     @NotBlank
     String name;
