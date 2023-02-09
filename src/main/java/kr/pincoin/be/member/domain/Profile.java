@@ -67,7 +67,7 @@ public class Profile extends BaseDateTime {
 
     private String telecom;
 
-    @OneToOne(optional = false,
+    @OneToOne(optional = false, // 내부(inner join)
             fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull

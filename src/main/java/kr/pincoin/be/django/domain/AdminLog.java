@@ -37,13 +37,13 @@ public class AdminLog {
     @NotBlank
     private String changeMessage;
 
-    @ManyToOne(optional = false,
+    @ManyToOne(optional = false, // 내부(inner join)
             fetch = FetchType.LAZY)
     @JoinColumn(name = "content_type_id")
     @NotNull
     private ContentType contentType;
 
-    @ManyToOne(optional = false,
+    @ManyToOne(optional = false, // 내부(inner join)
             fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull
