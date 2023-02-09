@@ -141,7 +141,7 @@ public class UserService {
         // 2. 리프레시 토큰 생성 (디비 저장)
         String refreshToken = tokenProvider.createRefreshToken();
 
-        DbRefreshToken refreshTokenFound = refreshTokenRepository.findByUsername(user.getUsername())
+        DbRefreshToken refreshTokenFound = refreshTokenRepository.findById(user.getId())
                 .orElseThrow(() -> new RuntimeException("Failed to issue refresh token"));
 
         refreshTokenRepository.save(refreshTokenFound.issueRefreshToken(refreshToken));

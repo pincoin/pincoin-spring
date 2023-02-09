@@ -18,4 +18,8 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(host, port);
     }
+
+    // Redis 이용하는 방법
+    // 1안. RedisTemplate 사용
+    // 2안. CrudRepository 사용 (JpaRepository 사용 불가)
 }
