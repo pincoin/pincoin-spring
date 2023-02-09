@@ -18,7 +18,7 @@ import static kr.pincoin.be.auth.jwt.TokenProvider.REFRESH_TOKEN_EXPIRES_IN;
 @Table(name = "member_refreshtoken")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RefreshToken extends BaseDateTime {
+public class DbRefreshToken extends BaseDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,11 +34,11 @@ public class RefreshToken extends BaseDateTime {
     @NotNull
     private User user;
 
-    public RefreshToken(User user) {
+    public DbRefreshToken(User user) {
         this.user = user;
     }
 
-    public RefreshToken issueRefreshToken(String refreshToken) {
+    public DbRefreshToken issueRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
 
         this.expiresIn = LocalDateTime.now().plus(Duration.of(REFRESH_TOKEN_EXPIRES_IN, ChronoUnit.SECONDS));

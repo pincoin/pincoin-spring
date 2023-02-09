@@ -8,10 +8,10 @@ import kr.pincoin.be.auth.repository.UserRepository;
 import kr.pincoin.be.home.dto.AccessTokenResponse;
 import kr.pincoin.be.home.dto.PasswordGrantRequest;
 import kr.pincoin.be.home.dto.RefreshTokenRequest;
-import kr.pincoin.be.member.domain.RefreshToken;
+import kr.pincoin.be.member.domain.DbRefreshToken;
 import kr.pincoin.be.auth.jwt.TokenProvider;
 import kr.pincoin.be.member.repository.ProfileRepository;
-import kr.pincoin.be.member.repository.RefreshTokenRepository;
+import kr.pincoin.be.member.repository.DbRefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,13 +30,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final DbRefreshTokenRepository refreshTokenRepository;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
                        ProfileRepository profileRepository,
-                       RefreshTokenRepository refreshTokenRepository,
+                       DbRefreshTokenRepository refreshTokenRepository,
                        TokenProvider tokenProvider,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -97,7 +97,7 @@ public class UserService {
                                                 .activate());
 
         // 2. 리프레시 토큰 레코드 추가(아직 토큰 생성 안 함- > 향후 Redis로 교체)
-        refreshTokenRepository.save(new RefreshToken(user));
+        refreshTokenRepository.save(new DbRefreshToken(user));
 
         return new UserResponse(user.getUsername(),
                                 user.getFirstName(),
@@ -141,7 +141,7 @@ public class UserService {
         // 2. 리프레시 토큰 생성 (디비 저장)
         String refreshToken = tokenProvider.createRefreshToken();
 
-        RefreshToken refreshTokenFound = refreshTokenRepository.findByUsername(user.getUsername())
+        DbRefreshToken refreshTokenFound = refreshTokenRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new RuntimeException("Failed to issue refresh token"));
 
         refreshTokenRepository.save(refreshTokenFound.issueRefreshToken(refreshToken));

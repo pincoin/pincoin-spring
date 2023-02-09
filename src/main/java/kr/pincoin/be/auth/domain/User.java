@@ -68,7 +68,7 @@ public class User {
      @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
      private Profile profile;
      @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-     private RefreshToken refreshToken;
+     private DbRefreshToken refreshToken;
     */
 
     public User(String username, String password, String email) {
