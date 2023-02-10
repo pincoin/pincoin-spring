@@ -4,21 +4,20 @@ import jakarta.validation.ConstraintViolationException;
 import kr.pincoin.be.auth.domain.User;
 import kr.pincoin.be.auth.dto.UserCreateRequest;
 import kr.pincoin.be.auth.dto.UserResponse;
+import kr.pincoin.be.auth.jwt.TokenProvider;
 import kr.pincoin.be.auth.repository.UserRepository;
 import kr.pincoin.be.home.dto.AccessTokenResponse;
 import kr.pincoin.be.home.dto.PasswordGrantRequest;
 import kr.pincoin.be.home.dto.RefreshTokenRequest;
-import kr.pincoin.be.member.domain.DbRefreshToken;
-import kr.pincoin.be.auth.jwt.TokenProvider;
+import kr.pincoin.be.member.domain.RedisRefreshToken;
 import kr.pincoin.be.member.repository.ProfileRepository;
-import kr.pincoin.be.member.repository.DbRefreshTokenRepository;
+import kr.pincoin.be.member.repository.RedisRefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,18 +29,19 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
-    private final DbRefreshTokenRepository refreshTokenRepository;
+    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
+
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
                        ProfileRepository profileRepository,
-                       DbRefreshTokenRepository refreshTokenRepository,
+                       RedisRefreshTokenRepository redisRefreshTokenRepository,
                        TokenProvider tokenProvider,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
+        this.redisRefreshTokenRepository = redisRefreshTokenRepository;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
     }
@@ -63,7 +63,7 @@ public class UserService {
     @Transactional
     public Optional<AccessTokenResponse>
     refresh(RefreshTokenRequest request) {
-        return userRepository.findActiveUserWithRefreshToken(request.getRefreshToken(), LocalDateTime.now())
+        return redisRefreshTokenRepository.findByRefreshToken(request.getRefreshToken())
                 .map(this::getAccessTokenResponse);
     }
 
@@ -96,8 +96,8 @@ public class UserService {
                                                  request.getLastName())
                                                 .activate());
 
-        // 2. 리프레시 토큰 레코드 추가(아직 토큰 생성 안 함- > 향후 Redis로 교체)
-        refreshTokenRepository.save(new DbRefreshToken(user));
+        // 2. 리프레시 토큰 저장을 위한 빈 레코드 추가 (디비 저장 시)
+        // refreshTokenRepository.save(new DbRefreshToken(user));
 
         return new UserResponse(user.getUsername(),
                                 user.getFirstName(),
@@ -140,13 +140,19 @@ public class UserService {
 
         // 2. 리프레시 토큰 생성 (디비 저장)
         String refreshToken = tokenProvider.createRefreshToken();
+        // dbRefreshTokenRepository.save(new DbRefreshToken(user).issueRefreshToken(refreshToken));
+        redisRefreshTokenRepository.save(new RedisRefreshToken(user).issueRefreshToken(refreshToken));
 
-        log.debug("{}", user.getId());
+        return new AccessTokenResponse(accessToken, ACCESS_TOKEN_EXPIRES_IN, refreshToken);
+    }
 
-        DbRefreshToken refreshTokenFound = refreshTokenRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Failed to issue refresh token"));
+    private AccessTokenResponse getAccessTokenResponse(RedisRefreshToken token) {
+        // 1. 액세스 토큰 생성 (디비 저장 안 함)
+        String accessToken = tokenProvider.createAccessToken(token.getUser().getUsername(), token.getUser().getId());
 
-        refreshTokenRepository.save(refreshTokenFound.issueRefreshToken(refreshToken));
+        // 2. 리프레시 토큰 생성 (Redis 저장)
+        String refreshToken = tokenProvider.createRefreshToken();
+        redisRefreshTokenRepository.save(new RedisRefreshToken(token.getUser()).issueRefreshToken(refreshToken));
 
         return new AccessTokenResponse(accessToken, ACCESS_TOKEN_EXPIRES_IN, refreshToken);
     }

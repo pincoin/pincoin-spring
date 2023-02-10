@@ -39,8 +39,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " WHERE rt.refreshToken = :refreshToken" +
             " AND :now < rt.expiresIn" +
             " AND u.active = true")
-    Optional<User> findActiveUserWithRefreshToken(@Param("refreshToken") String refreshToken,
-                                                  @Param("now") LocalDateTime now);
+    Optional<User> findActiveUserWithDbRefreshToken(@Param("refreshToken") String refreshToken,
+                                                    @Param("now") LocalDateTime now);
 
     @Query(value = "SELECT u" +
             " FROM User u" +
