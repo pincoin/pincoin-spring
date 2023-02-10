@@ -135,24 +135,32 @@ public class UserService {
     }
 
     private AccessTokenResponse getAccessTokenResponse(User user) {
-        // 1. 액세스 토큰 생성 (디비 저장 안 함)
+        // 1. 기존 리프레시 토큰 모두 삭제
+        redisRefreshTokenRepository.deleteAll(redisRefreshTokenRepository.findByUserId(user.getId()));
+
+        // 2. 액세스 토큰 생성 (디비 저장 안 함)
         String accessToken = tokenProvider.createAccessToken(user.getUsername(), user.getId());
 
-        // 2. 리프레시 토큰 생성 (디비 저장)
+        // 3. 리프레시 토큰 생성 (디비 저장)
         String refreshToken = tokenProvider.createRefreshToken();
         // dbRefreshTokenRepository.save(new DbRefreshToken(user).issueRefreshToken(refreshToken));
-        redisRefreshTokenRepository.save(new RedisRefreshToken(user).issueRefreshToken(refreshToken));
+        redisRefreshTokenRepository.save(new RedisRefreshToken(user.getId(), user.getUsername(), user.isActive())
+                        .issueRefreshToken(refreshToken));
 
         return new AccessTokenResponse(accessToken, ACCESS_TOKEN_EXPIRES_IN, refreshToken);
     }
 
     private AccessTokenResponse getAccessTokenResponse(RedisRefreshToken token) {
-        // 1. 액세스 토큰 생성 (디비 저장 안 함)
-        String accessToken = tokenProvider.createAccessToken(token.getUser().getUsername(), token.getUser().getId());
+        // 1. 기존 리프레시 토큰 모두 삭제
+        redisRefreshTokenRepository.deleteAll(redisRefreshTokenRepository.findByUserId(token.getUserId()));
 
-        // 2. 리프레시 토큰 생성 (Redis 저장)
+        // 2. 액세스 토큰 생성 (디비 저장 안 함)
+        String accessToken = tokenProvider.createAccessToken(token.getUsername(), token.getId());
+
+        // 3. 리프레시 토큰 생성 (Redis 저장)
         String refreshToken = tokenProvider.createRefreshToken();
-        redisRefreshTokenRepository.save(new RedisRefreshToken(token.getUser()).issueRefreshToken(refreshToken));
+        redisRefreshTokenRepository.save(new RedisRefreshToken(token.getUserId(), token.getUsername(), token.isActive())
+                                                 .issueRefreshToken(refreshToken));
 
         return new AccessTokenResponse(accessToken, ACCESS_TOKEN_EXPIRES_IN, refreshToken);
     }

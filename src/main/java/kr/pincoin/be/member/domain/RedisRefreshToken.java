@@ -1,6 +1,5 @@
 package kr.pincoin.be.member.domain;
 
-import kr.pincoin.be.auth.domain.User;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -21,10 +20,16 @@ public class RedisRefreshToken {
     @Indexed // 검색 가능 색인 필드
     private String refreshToken;
     private LocalDateTime expiresIn;
-    private final User user;
+    @Indexed
+    private final Long userId;
+    @Indexed // 검색 가능 색인 필드
+    private final String username;
+    private final boolean active;
 
-    public RedisRefreshToken(User user) {
-        this.user = user;
+    public RedisRefreshToken(Long userId, String username, boolean active) {
+        this.userId = userId;
+        this.username = username;
+        this.active = active;
     }
 
     public RedisRefreshToken issueRefreshToken(String refreshToken) {
