@@ -1,25 +1,45 @@
 package kr.pincoin.be.home.exception;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
 @Slf4j
-public class ApiExceptionHandler {
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse>
-    handleMethodArgumentNotValidException(HttpServletRequest ignored,
-                                          MethodArgumentNotValidException ex) {
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+    // 미구현 예외처리 목록
+    // 405 handleHttpRequestMethodNotSupported
+    // 415 handleHttpMediaTypeNotSupported
+    // 406 handleHttpMediaTypeNotAcceptable
+    // 500 handleMissingPathVariable
+    // 400 handleMissingServletRequestParameter
+    // 400 handleMissingServletRequestPart
+    // 400 handleServletRequestBindingException
+    // 404 handleNoHandlerFoundException
+    // 503 handleAsyncRequestTimeoutException
+    // 500 handleConversionNotSupported
+    // 400 handleTypeMismatch
+    // 400 handleHttpMessageNotReadable
+    // 500 handleHttpMessageNotWritable
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
         List<String> errors = new ArrayList<>();
 
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
@@ -31,8 +51,10 @@ public class ApiExceptionHandler {
 
         log.warn(ex.getLocalizedMessage());
 
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.BAD_REQUEST, "잘못된 입력 파라미터 형식", errors);
+        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                                         "잘못된 입력 파라미터 형식",
+                                                         errors);
 
-        return ResponseEntity.badRequest().body(response);
+        return handleExceptionInternal(ex, response, headers, status, request);
     }
 }
