@@ -49,7 +49,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
         }
 
-        log.warn(ex.getLocalizedMessage());
+        log.error(ex.getLocalizedMessage());
 
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.BAD_REQUEST,
                                                          "잘못된 입력 파라미터 형식",

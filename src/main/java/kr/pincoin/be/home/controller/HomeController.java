@@ -44,7 +44,7 @@ public class HomeController {
             UserResponse response = userService.createUser(request);
             return ResponseEntity.ok().body(response);
         } catch (DataIntegrityViolationException | ConstraintViolationException ignored) {
-            log.warn("username is duplicated: [{}]", request.getUsername());
+            log.error("username is duplicated: [{}]", request.getUsername());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
