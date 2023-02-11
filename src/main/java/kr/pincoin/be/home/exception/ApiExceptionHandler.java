@@ -18,7 +18,7 @@ import java.util.List;
 public class ApiExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse>
-    handleMethodArgumentNotValidException(HttpServletRequest request,
+    handleMethodArgumentNotValidException(HttpServletRequest ignored,
                                           MethodArgumentNotValidException ex) {
         List<String> errors = new ArrayList<>();
 
