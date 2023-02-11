@@ -15,7 +15,7 @@ import java.util.List;
 
 @ControllerAdvice
 @Slf4j
-public class CustomDefaultExceptionHandler {
+public class ApiExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse>
     handleMethodArgumentNotValidException(HttpServletRequest request,
