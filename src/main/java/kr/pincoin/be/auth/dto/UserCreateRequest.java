@@ -40,12 +40,12 @@ public class UserCreateRequest {
     @NotBlank(message = "필수 입력 필드")
     private String lastName;
 
-    @NotNull
+    @NotNull(message = "필수 입력 필드")
     @Email(message = "올바르지 않은 이메일 주소 형식")
     private String email;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
     @Pattern(regexp = PASSWORD_PATTERN, message = "대문자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함한 8자 이상")
     private String password;
 

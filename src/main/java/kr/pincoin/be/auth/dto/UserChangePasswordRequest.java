@@ -12,9 +12,9 @@ import static kr.pincoin.be.auth.dto.UserCreateRequest.PASSWORD_PATTERN;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserChangePasswordRequest {
-    @NotNull
-    @NotBlank
-    @Pattern(regexp = PASSWORD_PATTERN)
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
+    @Pattern(regexp = PASSWORD_PATTERN, message = "대문자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함한 8자 이상")
     private String password;
 
     public UserChangePasswordRequest(String password) {

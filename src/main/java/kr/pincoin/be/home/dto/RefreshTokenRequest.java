@@ -14,13 +14,13 @@ public class RefreshTokenRequest {
     // Refresh Token : 3자 서버 로그인 처리에 있어서는 권장하지 않음
     // https://www.oauth.com/oauth2-servers/making-authenticated-requests/refreshing-an-access-token/
     @JsonProperty("grant_type")
-    @NotNull
-    @Pattern(regexp = "refresh_token", flags = Pattern.Flag.CASE_INSENSITIVE)
+    @NotNull(message = "필수 입력 필드")
+    @Pattern(regexp = "refresh_token", flags = Pattern.Flag.CASE_INSENSITIVE, message = "잘못된 인가 요청")
     private String grantType;
 
     @JsonProperty("refresh_token")
-    @NotNull
-    @NotBlank
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
     private String refreshToken;
 
     private String scope;

@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserUpdateRequest {
-    @NotNull
-    @NotBlank
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
     private String firstName;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
     private String lastName;
 
-    @NotNull
-    @Email
+    @NotNull(message = "필수 입력 필드")
+    @Email(message = "올바르지 않은 이메일 주소 형식")
     private String email;
 
     public UserUpdateRequest(String firstName, String lastName, String email) {

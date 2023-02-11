@@ -14,16 +14,16 @@ public class PasswordGrantRequest {
     // Password Grant : 3자 서버 로그인 처리에 있어서는 권장하지 않음
     // https://www.oauth.com/oauth2-servers/access-tokens/password-grant/
     @JsonProperty("grant_type")
-    @NotNull
-    @Pattern(regexp = "password", flags = Pattern.Flag.CASE_INSENSITIVE)
+    @NotNull(message = "필수 입력 필드")
+    @Pattern(regexp = "password", flags = Pattern.Flag.CASE_INSENSITIVE, message = "잘못된 인가 요청")
     private String grantType;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
     private String username;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
     private String password;
 
     private String scope;
