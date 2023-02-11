@@ -33,6 +33,13 @@ public class HomeController {
     @PostMapping("/sign-up")
     public ResponseEntity<UserResponse>
     createUser(@Valid @RequestBody UserCreateRequest request) {
+        // @Valid - JSR-303 자바 표준 스펙
+        // 특정 ArgumentResolver를 통해 진행되어 "컨트롤러 메소드의 유효성 검증"만 가능
+        // 유효성 검증에 실패할 경우 MethodArgumentNotValidException 예외 발생
+
+        // @Validated -  스프링 프레임워크 지원 스펙
+        // AOP를 기반으로 스프링 빈의 유효성 검증을 위해 사용, 클래에는 @Validated, 메소드에는 @Valid
+        // 유효성 검증에 실패할 경우 ConstraintViolationException 예외 발생
         try {
             UserResponse response = userService.createUser(request);
             return ResponseEntity.ok().body(response);

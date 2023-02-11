@@ -1,6 +1,9 @@
 package kr.pincoin.be.auth.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +15,8 @@ public class UserCreateRequest {
     // 점, 밑줄, 하이픈으로 시작하거나 끝나지 않음
     // 점, 밑줄, 하이픈은 연속으로 사용할 수 없음
     // 길이는 3~32자
+    // Django: https://github.com/django/django/blob/main/django/contrib/auth/validators.py
+    // regex = r"^[\w.@+-]+\Z" (문자, 숫자, @ . + - _)
     public static final String USERNAME_PATTERN = "^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,32}[a-zA-Z0-9]$";
 
     // 대문자 최소 1개 이상 (?=.*?[A-Z])
@@ -19,28 +24,29 @@ public class UserCreateRequest {
     // 숫자 최소 1개 이상 (?=.*?[0-9])
     // 특수문자 1개 이상 (?=.*?[#?!@$%^&*-])
     // 8자 이상 .{8,} (with the anchors)
+    // Django: https://github.com/django/django/blob/main/django/contrib/auth/password_validation.py
     public static final String PASSWORD_PATTERN = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";
 
-    @NotNull
-    @NotBlank
-    @Pattern(regexp = USERNAME_PATTERN)
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
+    @Pattern(regexp = USERNAME_PATTERN, message = "알파벳, 숫자, 점(.), 밑줄(_), 하이픈(-)으로 3~32자")
     private String username;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
     private String firstName;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "필수 입력 필드")
+    @NotBlank(message = "필수 입력 필드")
     private String lastName;
 
     @NotNull
-    @Email
+    @Email(message = "올바르지 않은 이메일 주소 형식")
     private String email;
 
     @NotNull
     @NotBlank
-    @Pattern(regexp = PASSWORD_PATTERN)
+    @Pattern(regexp = PASSWORD_PATTERN, message = "대문자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함한 8자 이상")
     private String password;
 
     public UserCreateRequest(String username, String firstName, String lastName, String email, String password) {

@@ -212,8 +212,6 @@ public class AuthController {
         return ResponseEntity.ok().body(permissions);
     }
 
-    // updateUser
-    // deleteUser
     // listGroupsOfUser
     // listPermissionsOfUser
 
