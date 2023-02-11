@@ -19,20 +19,25 @@ public class AdminLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "action_time")
     @NotNull
     private LocalDateTime actionTime;
 
+    @Column(name = "object_id")
     @NotNull
     @NotBlank
     private String objectId;
 
+    @Column(name = "object_repr")
     @NotNull
     @NotBlank
     private String objectRepr;
 
+    @Column(name = "action_flag")
     @NotNull
     private int actionFlag;
 
+    @Column(name = "change_message")
     @NotNull
     @NotBlank
     private String changeMessage;

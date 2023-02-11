@@ -18,14 +18,17 @@ public class Migrations {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "app")
     @NotNull
     @NotBlank
     private String app;
 
+    @Column(name = "name")
     @NotNull
     @NotBlank
     private String name;
 
+    @Column(name = "applied")
     @NotNull
     private LocalDateTime applied;
 

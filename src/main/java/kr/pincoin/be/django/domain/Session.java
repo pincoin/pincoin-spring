@@ -1,5 +1,6 @@
 package kr.pincoin.be.django.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -19,10 +20,12 @@ public class Session {
     @Id
     private String sessionKey;
 
+    @Column(name = "session_data")
     @NotNull
     @NotBlank
     private String sessionData;
 
+    @Column(name = "expire_date")
     @NotNull
     private LocalDateTime expireDate;
 

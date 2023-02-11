@@ -2,8 +2,7 @@ package kr.pincoin.be.auth.service;
 
 import jakarta.validation.ConstraintViolationException;
 import kr.pincoin.be.auth.domain.User;
-import kr.pincoin.be.auth.dto.UserCreateRequest;
-import kr.pincoin.be.auth.dto.UserResponse;
+import kr.pincoin.be.auth.dto.*;
 import kr.pincoin.be.auth.jwt.TokenProvider;
 import kr.pincoin.be.auth.repository.UserRepository;
 import kr.pincoin.be.home.dto.AccessTokenResponse;
@@ -111,6 +110,24 @@ public class UserService {
                                 user.isActive(),
                                 user.getLastLogin(),
                                 user.getDateJoined());
+    }
+
+    @Transactional
+    public UserResponse
+    updateUser(UserUpdateRequest request) {
+        return null;
+    }
+
+    @Transactional
+    public UserResponse
+    changeUserPassword(UserChangePasswordRequest request) {
+        return null;
+    }
+
+    @Transactional
+    public UserResponse
+    deleteUser() {
+        return null;
     }
 
     @Transactional

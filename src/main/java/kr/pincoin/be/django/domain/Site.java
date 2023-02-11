@@ -16,10 +16,12 @@ public class Site {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "domain")
     @NotNull
     @NotBlank
     private String domain;
 
+    @Column(name = "name")
     @NotNull
     @NotBlank
     private String name;

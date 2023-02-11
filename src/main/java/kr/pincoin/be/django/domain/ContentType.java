@@ -16,10 +16,12 @@ public class ContentType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "app_label")
     @NotNull
     @NotBlank
     private String appLabel;
 
+    @Column(name = "model")
     @NotNull
     @NotBlank
     private String model;

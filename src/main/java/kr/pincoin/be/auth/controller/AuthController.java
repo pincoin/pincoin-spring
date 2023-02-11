@@ -79,6 +79,27 @@ public class AuthController {
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
+    @PutMapping("/users/{username}")
+    public ResponseEntity<UserResponse>
+    updateUser(@PathVariable String username) {
+        log.debug(username);
+        return null;
+    }
+
+    @PutMapping("/users/{username}/change-password")
+    public ResponseEntity<UserResponse>
+    changeUserPassword(@PathVariable String username) {
+        log.debug(username);
+        return null;
+    }
+
+    @DeleteMapping("/users/{username}")
+    public ResponseEntity<UserResponse>
+    deleteUser(@PathVariable String username) {
+        log.debug(username);
+        return null;
+    }
+
     @GetMapping("/staffs")
     public ResponseEntity<List<UserResponse>>
     listStaffUsers() {

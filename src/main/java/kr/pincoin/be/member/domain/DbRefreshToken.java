@@ -26,6 +26,7 @@ public class DbRefreshToken extends BaseDateTime {
     @Column(columnDefinition = "char(32)")
     private String refreshToken; // 장고 마이그레이션 char(32), 자바 36바이트 (대시 포함)
 
+    @Column(name = "expires_in")
     private LocalDateTime expiresIn;
 
     @OneToOne(optional = false, // 내부(inner join)
