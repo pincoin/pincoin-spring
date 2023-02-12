@@ -1,8 +1,11 @@
 package kr.pincoin.be.auth.controller;
 
+import jakarta.validation.Valid;
 import kr.pincoin.be.auth.domain.Group;
 import kr.pincoin.be.auth.domain.Permission;
+import kr.pincoin.be.auth.dto.UserChangePasswordRequest;
 import kr.pincoin.be.auth.dto.UserResponse;
+import kr.pincoin.be.auth.dto.UserUpdateRequest;
 import kr.pincoin.be.auth.service.GroupService;
 import kr.pincoin.be.auth.service.PermissionService;
 import kr.pincoin.be.auth.service.UserService;
@@ -81,14 +84,16 @@ public class AuthController {
 
     @PutMapping("/users/{username}")
     public ResponseEntity<UserResponse>
-    updateUser(@PathVariable String username) {
+    updateUser(@PathVariable String username,
+               @Valid @RequestBody UserUpdateRequest request) {
         log.debug(username);
         return null;
     }
 
     @PutMapping("/users/{username}/change-password")
     public ResponseEntity<UserResponse>
-    changeUserPassword(@PathVariable String username) {
+    changeUserPassword(@PathVariable String username,
+                       @Valid @RequestBody UserChangePasswordRequest request) {
         log.debug(username);
         return null;
     }
