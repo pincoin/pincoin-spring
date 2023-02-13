@@ -9,7 +9,9 @@ import kr.pincoin.be.auth.dto.UserUpdateRequest;
 import kr.pincoin.be.auth.service.GroupService;
 import kr.pincoin.be.auth.service.PermissionService;
 import kr.pincoin.be.auth.service.UserService;
+import kr.pincoin.be.home.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,7 +58,9 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            throw new ApiException(HttpStatus.NO_CONTENT,
+                             "사용자 없음",
+                             List.of("조회된 사용자가 없습니다."));
         }
 
         return ResponseEntity.ok().body(users);
@@ -79,7 +83,9 @@ public class AuthController {
                                 user.getLastLogin(),
                                 user.getDateJoined()
                         )))
-                .orElseGet(() -> ResponseEntity.noContent().build());
+                .orElseThrow(() -> new ApiException(HttpStatus.NO_CONTENT,
+                                                          "사용자 없음",
+                                                          List.of("조회된 사용자가 없습니다.")));
     }
 
     @PutMapping("/users/{username}")
@@ -123,7 +129,9 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            throw new ApiException(HttpStatus.NO_CONTENT,
+                                   "스태프 없음",
+                                   List.of("조회된 스태프가 없습니다."));
         }
 
         return ResponseEntity.ok().body(users);
@@ -146,7 +154,9 @@ public class AuthController {
                                 user.getLastLogin(),
                                 user.getDateJoined()
                         )))
-                .orElseGet(() -> ResponseEntity.noContent().build());
+                .orElseThrow(() ->  new ApiException(HttpStatus.NO_CONTENT,
+                                                   "스태프 없음",
+                                                   List.of("조회된 스태프가 없습니다.")));
     }
 
     @GetMapping("/superusers")
@@ -167,7 +177,9 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            throw new ApiException(HttpStatus.NO_CONTENT,
+                                   "슈퍼유저 없음",
+                                   List.of("조회된 슈퍼유저가 없습니다."));
         }
 
         return ResponseEntity.ok().body(users);
@@ -190,7 +202,9 @@ public class AuthController {
                                 user.getLastLogin(),
                                 user.getDateJoined()
                         )))
-                .orElseGet(() -> ResponseEntity.noContent().build());
+                .orElseThrow(() -> new ApiException(HttpStatus.NO_CONTENT,
+                                                    "슈퍼유저 없음",
+                                                    List.of("조회된 슈퍼유저가 없습니다.")));
     }
 
     @GetMapping("/groups")
@@ -199,7 +213,9 @@ public class AuthController {
         List<Group> groups = groupService.listGroups();
 
         if (groups.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            throw new ApiException(HttpStatus.NO_CONTENT,
+                                   "그룹 없음",
+                                   List.of("조회된 그룹이 없습니다."));
         }
 
         return ResponseEntity.ok().body(groups);
@@ -211,7 +227,9 @@ public class AuthController {
         List<Permission> permissions = permissionService.listPermissions();
 
         if (permissions.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            throw new ApiException(HttpStatus.NO_CONTENT,
+                                   "권한 없음",
+                                   List.of("조회된 권한이 없습니다."));
         }
 
         return ResponseEntity.ok().body(permissions);
