@@ -1,6 +1,8 @@
 package kr.pincoin.be.home.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -56,5 +59,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                          errors);
 
         return handleExceptionInternal(ex, response, headers, status, request);
+    }
+
+    @ExceptionHandler(value = {ConstraintViolationException.class, DataIntegrityViolationException.class})
+    protected ResponseEntity<ApiErrorResponse> handleDataException() {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ApiErrorResponse(HttpStatus.CONFLICT,
+                                           "UNIQUE 필드 중복 오류",
+                                           new ArrayList<>()));
     }
 }

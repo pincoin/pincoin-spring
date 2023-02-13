@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserCreateRequest {
-    // 대소문자와 숫자, 점(.), 밑줄(_), 하이픈(-)으로 구성
+    // 알파벳, 숫자, 점(.), 밑줄(_), 하이픈(-) 사용 가능
     // 점, 밑줄, 하이픈으로 시작하거나 끝나지 않음
-    // 점, 밑줄, 하이픈은 연속으로 사용할 수 없음
+    // 점, 밑줄, 하이픈은 연속으로 사용할 수 없음 (이모티콘 형식 사용 불가)
     // 길이는 3~32자
     // Django: https://github.com/django/django/blob/main/django/contrib/auth/validators.py
     // regex = r"^[\w.@+-]+\Z" (문자, 숫자, @ . + - _)
-    public static final String USERNAME_PATTERN = "^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,32}[a-zA-Z0-9]$";
+    public static final String USERNAME_PATTERN = "^(?=.{3,32}$)(?![._-])(?!.*[._-]{2})[a-zA-Z0-9._-]+(?<![_.])$";
 
     // 대문자 최소 1개 이상 (?=.*?[A-Z])
     // 소문자 최소 1개 이상 (?=.*?[a-z])
@@ -29,7 +29,7 @@ public class UserCreateRequest {
 
     @NotNull(message = "필수 입력 필드")
     @NotBlank(message = "필수 입력 필드")
-    @Pattern(regexp = USERNAME_PATTERN, message = "알파벳, 숫자, 점(.), 밑줄(_), 하이픈(-)으로 3~32자")
+    @Pattern(regexp = USERNAME_PATTERN, message = "알파벳, 숫자, 점(.), 밑줄(_), 하이픈(-)으로 4~32자, 이모티콘 아이디 사용불가")
     private String username;
 
     @NotNull(message = "필수 입력 필드")
