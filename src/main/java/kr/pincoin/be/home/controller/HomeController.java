@@ -63,7 +63,7 @@ public class HomeController {
                 })
                 .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED,
                                                     "로그인 실패",
-                                                    List.of("잘못된 아이디 또는 비밀번호 입력입니다.")));
+                                                    List.of("아이디 또는 비밀번호가 올바르지 않습니다.")));
     }
 
     @PostMapping("/refresh")
@@ -77,6 +77,6 @@ public class HomeController {
                 })
                 .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED,
                                                     "로그인 실패",
-                                                    List.of("잘못된 아이디 또는 비밀번호 입력입니다.")));
+                                                    List.of("아이디 또는 비밀번호가 올바르지 않습니다.")));
     }
 }
