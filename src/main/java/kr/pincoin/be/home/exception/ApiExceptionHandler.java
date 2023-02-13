@@ -69,4 +69,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                            "UNIQUE 필드 중복 오류",
                                            new ArrayList<>()));
     }
+
+    @ExceptionHandler(value = {ApiException.class})
+    protected ResponseEntity<ApiErrorResponse> handleApiException(ApiException ex) {
+        return ResponseEntity.status(ex.getResponse().getStatus())
+                .body(new ApiErrorResponse(ex.getResponse().getStatus(),
+                                           ex.getResponse().getMessage(),
+                                           ex.getResponse().getErrors()));
+    }
 }
