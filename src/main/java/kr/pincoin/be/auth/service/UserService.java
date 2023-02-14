@@ -13,6 +13,7 @@ import kr.pincoin.be.member.repository.DbRefreshTokenRepository;
 import kr.pincoin.be.member.repository.ProfileRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,6 +77,7 @@ public class UserService {
     }
 
     @Transactional
+    @PreAuthorize("#username == authentication.principal.username")
     public Optional<User>
     getActiveUser(String username) {
         return userRepository.findActiveUser(username);

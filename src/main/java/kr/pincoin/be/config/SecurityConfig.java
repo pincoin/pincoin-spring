@@ -1,14 +1,15 @@
 package kr.pincoin.be.config;
 
-import kr.pincoin.be.auth.util.DjangoPasswordEncoder;
 import kr.pincoin.be.auth.jwt.JwtAccessDeniedHandler;
 import kr.pincoin.be.auth.jwt.JwtAuthenticationEntryPoint;
 import kr.pincoin.be.auth.jwt.JwtFilter;
+import kr.pincoin.be.auth.util.DjangoPasswordEncoder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
+@EnableMethodSecurity
 @Getter
 @Slf4j
 public class SecurityConfig {
