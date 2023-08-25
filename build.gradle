@@ -33,7 +33,7 @@ dependencies {
     // - Validation
     // - PostgreSQL Driver
 
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
     // annotationProcessor: JSONException
     annotationProcessor 'org.projectlombok:lombok'
 
@@ -47,6 +47,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web' // REST Controller
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // SNS 로그인
     implementation 'org.springframework.boot:spring-boot-starter-webflux' // WebClient, Mono, Flux 리액티브
+
+    // annotationProcessor 기본값으로 설정할 경우 에러 발생
+    // Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.security.web.SecurityFilterChain]: Factory method 'filterChain' threw exception with message: org/springframework/boot/configurationprocessor/json/JSONException
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
     runtimeOnly 'org.postgresql:postgresql'
 

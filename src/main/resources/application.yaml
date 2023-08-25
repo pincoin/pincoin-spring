@@ -28,6 +28,8 @@ spring:
       add-mappings: false
 
 logging:
+  file:
+    name: /var/www/pincoinkr/logs/spring.log
   level:
     kr.pincoin.api: TRACE
     org.hibernate.SQL: DEBUG
