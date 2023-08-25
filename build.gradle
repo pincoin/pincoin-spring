@@ -1,0 +1,89 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.2'
+    id 'io.spring.dependency-management' version '1.1.2'
+}
+
+group = 'kr.pincoin'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // spring initializr packages
+    // - Spring Boot DevTools
+    // - Spring Configuration Processor
+    // - Lombok
+    // - Spring Web
+    // - Spring Reactive Web
+    // - Spring Data JPA
+    // - Spring Security
+    // - Validation
+    // - PostgreSQL Driver
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    // annotationProcessor: JSONException
+    annotationProcessor 'org.projectlombok:lombok'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    compileOnly 'org.projectlombok:lombok'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA, Hibernate
+    implementation 'org.springframework.boot:spring-boot-starter-security' // spring-security
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // DTO 빈 검증
+    implementation 'org.springframework.boot:spring-boot-starter-web' // REST Controller
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // SNS 로그인
+    implementation 'org.springframework.boot:spring-boot-starter-webflux' // WebClient, Mono, Flux 리액티브
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.projectreactor:reactor-test'
+
+    // WebFlux WebClient 애플실리콘 지원
+    boolean isMacOS = System.getProperty("os.name").startsWith("Mac OS X") // os.name=Mac OS X
+    String architecture = System.getProperty("os.arch").toLowerCase() // os.arch=aarch64
+
+    if (isMacOS && architecture == "aarch64") {
+        implementation("io.netty:netty-resolver-dns-native-macos:4.1.86.Final:osx-aarch_64")
+    }
+
+    // JJWT-API 추가 - 2022-08-24 (버전 명시): https://mvnrepository.com/artifact/io.jsonwebtoken
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // QueryDSL 추가 - 2021-08-24 (버전 및 태그 명시): https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// 버전 이름 없이 jar 빌드
+bootJar {
+    archiveFileName = "${rootProject.name}.jar"
+}
+
+// plain jar 빌드 안 함
+jar {
+    enabled = false
+}
