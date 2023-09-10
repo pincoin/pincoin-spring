@@ -62,11 +62,11 @@ public class AuthController {
         responseHeaders.add("Authorization", "Bearer " + accessToken);
 
         ResponseCookie cookie = ResponseCookie.from("refreshToken", "hash")
-                .maxAge(7 * 24 * 60 * 60) // 7일
-                .path("/") //
-                // .secure(true)
-                .sameSite("None") // 동일 사이트와 크로스 사이트 모두 쿠키 전송 가능
                 .httpOnly(true) // 브라우저에서 쿠키 접근 불가
+                .secure(true) // https 프로토콜 전송
+                .sameSite("None") // 동일 사이트와 크로스 사이트 모두 쿠키 전송 가능
+                .path("/") // 쿠키 헤더를 전송을 위해 요청되는 URL 내에 반드시 존재해야 하는 URL 경로
+                .maxAge(7 * 24 * 60 * 60) // 7일
                 .build();
         responseHeaders.add("Set-Cookie", cookie.toString());
 
