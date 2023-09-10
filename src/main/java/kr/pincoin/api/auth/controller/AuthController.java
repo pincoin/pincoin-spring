@@ -1,7 +1,5 @@
 package kr.pincoin.api.auth.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import kr.pincoin.api.auth.dto.AccessTokenResponse;
@@ -10,6 +8,7 @@ import kr.pincoin.api.auth.jwt.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +45,7 @@ public class AuthController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AccessTokenResponse>
-    authenticate(@Valid @RequestBody PasswordGrantRequest request, HttpServletResponse response) {
+    authenticate(@Valid @RequestBody PasswordGrantRequest request) {
         log.debug("{} {}", request.getEmail(), request.getPassword());
 
         // jwt 반환
@@ -62,14 +61,14 @@ public class AuthController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Authorization", "Bearer " + accessToken);
 
-        // 리프레시 토큰 = 쿠키 - HttpOnly + Secure
-        Cookie cookie = new Cookie("refreshToken", "tokehHash");
-        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", "hash")
+                .maxAge(7 * 24 * 60 * 60) // 7일
+                .path("/") //
+                // .secure(true)
+                .sameSite("None") // 동일 사이트와 크로스 사이트 모두 쿠키 전송 가능
+                .httpOnly(true) // 브라우저에서 쿠키 접근 불가
+                .build();
+        responseHeaders.add("Set-Cookie", cookie.toString());
 
         return ResponseEntity
                 .ok()
