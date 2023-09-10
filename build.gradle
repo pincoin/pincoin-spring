@@ -52,7 +52,8 @@ dependencies {
     // Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.security.web.SecurityFilterChain]: Factory method 'filterChain' threw exception with message: org/springframework/boot/configurationprocessor/json/JSONException
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
-    runtimeOnly 'org.postgresql:postgresql'
+    // runtimeOnly 'org.postgresql:postgresql' // PostgreSQL
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
