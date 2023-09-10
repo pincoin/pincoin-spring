@@ -1,5 +1,7 @@
 package kr.pincoin.api.auth.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import kr.pincoin.api.auth.dto.AccessTokenResponse;
@@ -44,7 +46,7 @@ public class AuthController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AccessTokenResponse>
-    authenticate(@Valid @RequestBody PasswordGrantRequest request) {
+    authenticate(@Valid @RequestBody PasswordGrantRequest request, HttpServletResponse response) {
         log.debug("{} {}", request.getEmail(), request.getPassword());
 
         // jwt 반환
@@ -59,6 +61,16 @@ public class AuthController {
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Authorization", "Bearer " + accessToken);
+
+        // 리프레시 토큰 = 쿠키 - HttpOnly + Secure
+        Cookie cookie = new Cookie("refreshToken", "tokehHash");
+        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        // cookie.setPath("/");
+
+        response.addCookie(cookie);
+
         return ResponseEntity
                 .ok()
                 .headers(responseHeaders)

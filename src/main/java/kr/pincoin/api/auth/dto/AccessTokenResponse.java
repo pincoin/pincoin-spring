@@ -12,16 +12,15 @@ import lombok.NoArgsConstructor;
 public class AccessTokenResponse {
     // 액세스 토큰 응답
     // https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/
+    @JsonProperty("tokenType")
+    @NotNull
+    @NotBlank
+    private String tokenType;
 
     @JsonProperty("accessToken")
     @NotNull
     @NotBlank
     private String accessToken;
-
-    @JsonProperty("tokenType")
-    @NotNull
-    @NotBlank
-    private String tokenType;
 
     @JsonProperty("expiresIn")
     @NotNull
