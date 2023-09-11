@@ -56,16 +56,24 @@ public class AuthController {
         claims.put("username", "john");
         claims.put("email", "test@example.com");
 
+        // 액세스 토큰 = 리덕스 상태 관리 (휘발성)
         String accessToken = tokenProvider.createAccessToken(claims);
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Authorization", "Bearer " + accessToken);
 
+        // 리프레시 토큰 = HttpOnly / secure 쿠키
+        // HttpOnly
+        // - document.cookie 자바스크립트 코드로 쿠키 접근 불가
+        // - 브라우저에서 조회 불가
+        // 서버로 HTTP Request 요청을 보낼 때에만 쿠키 전송
+        // Secure
+        // - HTTPS 통신할 때만 브라우저가 서버로 쿠키 전송
         ResponseCookie cookie = ResponseCookie.from("refreshToken", "hash")
-                .httpOnly(true) // 브라우저에서 쿠키 접근 불가
-                .secure(true) // https 프로토콜 전송
-                .sameSite("None") // 동일 사이트와 크로스 사이트 모두 쿠키 전송 가능
-                .path("/") // 쿠키 헤더를 전송을 위해 요청되는 URL 내에 반드시 존재해야 하는 URL 경로
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None") // 동일 사이트, 크로스 사이트 모두 쿠키 허용
+                .path("/") // 도메인 전체에서 쿠키 허용
                 .maxAge(7 * 24 * 60 * 60) // 7일
                 .build();
         responseHeaders.add("Set-Cookie", cookie.toString());
@@ -78,7 +86,8 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public String
-    refreshToken() {
+    refreshToken(@CookieValue("refreshToken") String refreshToken) {
+        log.warn(refreshToken);
         return "refresh";
     }
 }

@@ -22,6 +22,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -33,7 +35,7 @@ public class SecurityConfig {
     private String contentSecurityPolicy;
 
     @Value("${security-config.cors.origins}")
-    private String corsOrigins;
+    private List<String> corsOrigins;
 
     @Value("${security-config.cors.headers}")
     private String corsHeaders;
@@ -150,7 +152,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOriginPattern(corsOrigins);
+        configuration.setAllowedOrigins(corsOrigins);
         configuration.addAllowedHeader(corsHeaders);
         configuration.addAllowedMethod(corsMethods);
         configuration.setAllowCredentials(corsAllowCredentials);
